@@ -23,11 +23,12 @@ class ApplyGiftCard implements ObserverInterface
 
     public function execute(Observer $observer)
     {
+        $controller = $observer->getControllerAction();
         $couponCode = $observer->getRequest()->getParam('coupon_code');
         $giftCardCode = "CONGTIENDEV";
         if ($couponCode === $giftCardCode) {
             $this->messageManager->addSuccessMessage(__('Gift card code applied successfully.'));
-            $observer->getEvent()->setEventCancelled(true);
+            $controller->getRequest()->setParam('remove', 1);
         } else {
             $this->messageManager->getMessages(true)->deleteMessageByIdentifier('coupon');
         }

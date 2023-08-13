@@ -1,0 +1,25 @@
+<?php
+
+use Mageplaza\GiftCard\Block\Config;
+
+/** @var $block Config */
+
+?>
+<?php if ($block->isGiftCardEnabled()): ?>
+    <p>Chức năng Gift Card đã được bật</p>
+    <?php if ($block->allowUsedGiftCardAtCheckout()): ?>
+        <p>Đã bật chức năng sử dụng Gift Card tại trang thanh toán</p>
+    <?php else: ?>
+        <p>Chức năng sử dụng Gift Card tại trang thanh toán đã tắt</p>
+    <?php endif; ?>
+
+    <?php if ($block->allowRedeemGiftCard()): ?>
+        <p>Đã bật chức năng chuyển số tiền từ Gift Card vào số dư tài khoản của khách hàng</p>
+    <?php else: ?>
+        <p>Đã tắt chức năng chuyển số tiền từ Gift Card vào số dư tài khoản của khách hàng</p>
+    <?php endif; ?>
+<?php else: ?>
+    <p>Chức năng Gift Card đã được tắt</p>
+<?php endif; ?>
+
+

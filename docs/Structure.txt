@@ -1,0 +1,72 @@
+Cấu trúc cơ bản trong Magento :
+1. app
+- Thư mục app trong mangento là nơi chứa các file php chính của hệ thống dùng để xử lý các request từ người dùng.
+- Các thành phần cơ bản trong app bao gồm :
+  * app/code : là thư mục  chứa các module để xử lý logic, hiển thị giao diện và thêm các tính năng mới vào hệ thống.
+
+  * app/design : là thư mục chứa các file giao diện của hệ thống. Tùy biến giao diện bằng cách chỉnh sửa các file
+    template, css và js trong thư mục này.
+    + frontend : là thư mục chứa các file giao diện cho phần frontend của hệ thống.
+    + adminhtml : là thư mục chứa các file giao diện cho phần backend của hệ thống.
+
+  * app/etc là thư mục chứa các file cấu hình của hệ thống
+     + config.php : dùng để cấu hình các module, theme, language pack, các file cấu hình khác.
+     + env.php : dùng để cấu hình các thông số cơ bản của hệ thống như : fontName, database, môi trường,..
+     + db_schema.xml : dùng để cấu hình các bảng trong database. Các bảng này được tạo ra khi cài đặt hệ thống.
+     + di.xml : dùng để đăng ký object trong hệ thống sử dụng cơ chế Dependency Injection của Magento nhằm quản lý các
+     đối tượng và sử dụng các đối tượng trở nên linh hoạt, dễ mở rộng.
+    + NonComposerComponentRegistration.php : dùng để đăng ký các module không sử dụng composer.
+    + registration_globlist.php : dùng để đăng ký các module sử dụng composer.
+    + vendor_path.php : dùng để đăng ký đường dẫn đến thư mục vendor.
+
+    * .congfig.swp là tệp sinh ra khi sử dụng Vim
+
+    * .htaccess là tệp cấu hình Apache, định tuyến các yêu cầu HTTP đến các tệp trong thư mục.
+
+2.Thu mục generated
+    - Generated là thư mục chứa các file  hệ thống để tối ưu trải nghiệm người dùng. Không nên chỉnh sửa các file này.
+    + generated/code chứa các class và interface giúp giảm thời gian tạo các (object) và giúp cải thiện hiệu suất của
+    ứng dụng.
+    + generated/code/Magento chứa các class và interface được tạo ra bởi các module của Magento.
+    + generated/code/Dotdigitalgroup chứa các class và interface được tạo ra bởi các module của Dotdigitalgroup. (
+    Dotdigitalgroup là một module của Magento)
+
+3. Thư mục pub
+   - Thư mục pub và viết tắt của Public chứa các file tĩnh của hệ thống như : css, js, ảnh, các file tải về,..
+    - Các file trong thư mục pub có thể được truy cập trực tiếp từ trình duyệt mà không cần xử lý qua các file php.
+    - Các file trong thư mục pub được tạo ra bởi các module của Magento và các module của bên thứ 3.
+       + pub/index.php là file chạy đâu tiên, nó sẽ gọi đến các file khác để xử lý các request từ người dùng.
+       + pub/errors là thư mục chứa các file lỗi của hệ thống.
+       + pub/media là thư mục chứa các file ảnh, video, file tải về,..
+       + pub/static là thư mục chứa các file tĩnh của hệ thống như : css, js, ảnh, các file tải về,..
+       + pub/health_check.php là file kiểm tra xem hệ thống có hoạt động bình thường hay không.
+       + pub/cron.php là file chạy các cron job của hệ thống. (cron job là các tác vụ được set time để chạy định kỳ)
+       + pub/get.php là file dùng để lấy các file tĩnh của hệ thống. (css, js, ảnh, các file tải về,..)
+       + pub/.user.ini là file cấu hình PHP. (Memory_limit, max_execution_time,..)
+
+4. Thư mục var
+    - Thư mục var là thư mục  chứa các dữ liệu tạm thời và dữ liệu lưu trữ liên quan đến hoạt động của hệ thống.
+      + var/cache là thư mục chứa các file cache của hệ thống. (cache ăng tốc tải trang bằng cách lưu trữ các trang đã
+      được tạo sẵn để tái sử dụng cho các yêu cầu sau đó.)
+      + var/composer_home là thư mục chứa các file composer của hệ thống.
+      + var/di là thư mục chứa các file di của hệ thống. (di là viết tắt của Dependency Injection - Cơ chế quản lý các đối tượng và sử dụng các đối tượng trở nên linh hoạt, dễ mở rộng)
+      + var/generation là thư mục chứa các file generation của hệ thống. (generation là các file được tạo ra bởi các module của Magento)
+      + var/import là thư mục chứa các file import của hệ thống.
+      + var/import_history là thư mục chứa các file import_history của hệ thống. (import_history là các file lịch sử import)
+      + var/log là thư mục chứa các file log của hệ thống. (log là các file ghi lại các hoạt động của hệ thống)
+      + var/page_cache là thư mục chứa các file page_cache của hệ thống. (page_cache là các file cache của các trang)
+      + var/session là thư mục chứa các file session của hệ thống.
+      + var/tmp là thư mục chứa các file tmp của hệ thống. (tmp là các file tạm của hệ thống)
+      + var/view_preprocessed là thư mục chứa các file view_preprocessed của hệ thống. (view_preprocessed là các file được xử lý trước khi hiển thị)
+      + var/.sample-data-state.flag là file đánh dấu trạng thái của sample data. (sample data là dữ liệu mẫu)
+      + var/resources_config.json là file cấu hình resource của hệ thống. ( Nó chứa các thông tin về tài nguyên như tệp
+      tĩnh như hình ảnh, font, các tệp CSS, JavaScript và nhiều tài nguyên khác.)
+      + var/opt là thường được sử dụng để lưu trữ các mô-đun hoặc tiện ích mở rộng tùy chọn không phải là một phần của chức năng cốt lõi. Nó không phải là một thư mục tiêu chuẩn trong Magento, mà là một quy ước được một số nhà phát triển tuân theo để tổ chức mã tùy chỉnh của họ.
+5.Thư mục vendor
+    - Thư mục vendor là thư mục chứa các module của Magento và các module của bên thứ 3 được quản lý bởi composer. Thư
+    mục vendor được sinh ra khi chạy lệnh composer install hoặc composer update.
+    - Các module của Magento được đặt trong thư mục vendor/magento.
+    - Các module của bên thứ 3 được đặt trong thư mục vendor/ten_module. VD : vendor/dotdigitalgroup.
+    - Các module của bên thứ 3 được cài đặt thông qua composer.
+
+

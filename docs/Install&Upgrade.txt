@@ -1,0 +1,57 @@
+1. InstallSchema
+InstallSchema là một trong các loại lớp tạo cơ sở dữ liệu (Database Schema) trong quá trình cài đặt (installation) hoặc nâng cấp (upgrade) của một module.
+Khi bạn cài đặt hoặc nâng cấp một module, Magento sẽ thực thi các tệp lớp InstallSchema để tạo bảng và cơ sở dữ liệu liên quan cho module đó.
+
+Các tệp InstallSchema thường được đặt trong thư mục Setup của module và có tên theo quy tắc InstallSchema.php.
+Khi Magento phát hiện tệp InstallSchema.php, nó sẽ thực thi nội dung của lớp đó để tạo các bảng và các cấu trúc cơ sở
+dữ liệu khác liên quan đến module.
+
+InstallSchema chỉ thực thi một lần duy nhất khi module được cài đặt lần đầu tiên. Nêu đã đăng ký module thì thực hiện
+xóa module trong phpAdmin > setup_module > xóa module đó đi.
+Sau đó chạy lệnh php bin/magento setup:upgrade để cài đặt lại module và thực thi  InstallSchema
+
+Nếu muốn thay đổi cấu trúc cơ sở dữ liệu trong quá trình nâng cấp module, bạn có thể sử dụng UpgradeSchema.
+
+------------------------------------------------------------------------------------------------------------------------
+
+2.InstallData
+
+InstallData được sử dụng để cung cấp dữ liệu mẫu hoặc dữ liệu khởi tạo trong quá trình cài đặt ban đầu của một module. Nếu bạn muốn điền dữ liệu vào bảng cơ sở dữ liệu mới được tạo trong InstallSchema, bạn có thể sử dụng lớp InstallData.
+Tương tự như InstallSchema, các tệp InstallData cũng được đặt trong thư mục Setup của module và có tên theo quy tắc InstallData.php.
+
+Các lớp InstallData phải được kế thừa từ lớp Magento\Framework\Setup\InstallData và phải triển khai phương thức install().
+Cũng như InstallSchema thì InstallData cũng chỉ thực thi một lần duy nhất khi module được cài đặt lần đầu tiên.
+=> Nếu đã đăng ký module thì thực hiện xóa module trong phpAdmin > setup_module > xóa module đó đi.
+Sau đó chạy lệnh php bin/magento setup:upgrade để cài đặt lại module và thực thi  InstallData
+
+------------------------------------------------------------------------------------------------------------------------
+
+3.UpgradeSchema
+UpgradeSchema được sử dụng để thực hiện các thay đổi cơ sở dữ liệu trong quá trình nâng cấp (upgrade) của một module.
+Khi muốn thay đổi cấu trúc bảng hoặc thêm mới các bảng trong module của mình sau khi module đã được cài đặt thì sẽ sử
+dụng lớp UpgradeSchema.
+Do đã đăng ký module trong file registration.php nên khi chạy lệnh php bin/magento setup:upgrade thì Magento sẽ tự động
+bỏ qua InstallSchema và chạy UpgradeSchema.
+
+Các bước để thực hiện thay đổi cấu trúc bảng hoặc thêm mới các bảng trong module:
+
+1. Tạo file UpgradeSchema.php trong thư mục Setup của module và nhập nội dung cần thay đổi
+
+VD : Thêm cột, thay đổi kiểu dữ liệu của cột, thêm mới bảng, thay đổi tên bảng, xóa bảng, thêm mới khóa ngoại, xóa khóa ngoại,
+thêm mới chỉ mục, xóa chỉ mục, thay đổi chỉ mục, thêm mới khóa chính, xóa khóa chính,
+thay đổi khóa chính, thêm mới cột, xóa cột, thay đổi cột, thêm mới chỉ mục,...
+
+2. Chạy lệnh php bin/magento setup:upgrade để thực hiện nâng cấp module.
+Lưu ý : Nếu muốn thay đổi cấu trúc bảng hoặc thêm mới các bảng trong module thì phải thay đổi version của module trong file
+module.xml và trong file UpgradeSchema Nếu không thay đổi version thì Magento sẽ không thực hiện nâng cấp module.
+
+------------------------------------------------------------------------------------------------------------------------
+
+4.UpgradeData
+
+UpgradeData được sử dụng để cung cấp dữ liệu mẫu hoặc dữ liệu khởi tạo trong quá trình nâng cấp (upgrade) của một module.
+Nếu bạn muốn điền dữ liệu vào bảng cơ sở dữ liệu mới được tạo trong UpgradeSchema, bạn có thể sử dụng lớp UpgradeData.
+Các lớp UpgradeData phải được kế thừa từ lớp Magento\Framework\Setup\UpgradeData và phải triển khai phương thức upgrade().
+
+Cũng như UpgradeSchema thì UpgradeData thì khi update cần phải thay đổi version của module trong file module.xml và
+trong file và trong file UpgradeData Nếu không thay đổi version thì Magento sẽ không thực hiện nâng cấp module.

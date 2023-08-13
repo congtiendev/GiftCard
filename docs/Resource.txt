@@ -1,0 +1,22 @@
+system.xml:
+Tệp system.xml được sử dụng để cấu hình các cài đặt hệ thống (system configurations) trong Magento.
+Nó cho phép bạn định nghĩa các trường và các giá trị của chúng mà người dùng có thể tùy chỉnh trong phần cấu hình hệ thống của trang quản trị.
+Thẻ <resource> trong tệp system.xml được sử dụng để xác định tài nguyên mà người dùng cần phải có quyền để thực hiện các thay đổi trong cài đặt hệ thống.
+Nếu người dùng không có quyền truy cập vào tài nguyên được chỉ định, họ sẽ không thể lưu các thay đổi trong phần cấu hình hệ thống.
+
+menu.xml:
+Tệp menu.xml được sử dụng để xác định cấu trúc của menu trong trang quản trị Magento.
+Nó giúp bạn thêm, sửa đổi hoặc xóa các mục menu và các liên kết bên trong chúng.
+Thẻ <resource> trong tệp menu.xml được sử dụng để xác định tài nguyên mà người dùng cần phải có quyền để thấy và truy cập vào các mục menu cụ thể.
+Nếu người dùng không có quyền truy cập vào tài nguyên được chỉ định, họ sẽ không thể thấy hoặc truy cập các mục menu đó.
+
+acl.xml:
+Tệp acl.xml (Access Control List) được sử dụng để quản lý kiểm soát truy cập vào các chức năng và tính năng của Magento.
+Nó giúp bạn xác định và cấu hình quyền truy cập cho các vai trò (roles) và người dùng cụ thể.
+Thẻ <resource> trong tệp acl.xml được sử dụng để xác định tài nguyên (chức năng, trang hoặc phạm vi) mà bạn muốn kiểm
+soát quyền truy cập.
+Bằng cách định nghĩa các <resource> khác nhau và gán chúng cho các vai trò và người dùng, bạn có thể quản lý quyền truy cập một cách linh hoạt
+và bảo mật cho trang quản trị và các tính năng khác của Magento.
+
+Tóm lại, các thẻ <resource> trong system.xml, menu.xml và acl.xml đều đóng vai trò quan trọng trong việc quản lý quyền truy cập
+và kiểm soát các tính năng và chức năng của Magento để đảm bảo an toàn và bảo mật cho trang web của bạn.

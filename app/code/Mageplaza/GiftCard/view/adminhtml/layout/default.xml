@@ -1,0 +1,8 @@
+<!-- File: app/code/YourVendor/YourModule/view/frontend/layout/default_head_blocks.xml -->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Mageplaza_GiftCard::css/custom.css" media="all"/>
+        <script src="Mageplaza_GiftCard::js/custom.js"/>
+    </head>
+</page>

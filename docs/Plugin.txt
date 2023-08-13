@@ -1,0 +1,17 @@
+Trong Magento, plugin là một loại cơ chế giúp mở rộng và tùy chỉnh các phương thức của các lớp có sẵn (có thể là lớp của Magento Core hoặc các module của bên thứ ba). Plugin được sử dụng để thay đổi hoặc mở rộng hành vi của các phương thức mà không cần ghi đè (override) hoàn toàn lớp gốc.
+
+Plugin có ba phương thức chính để can thiệp vào phương thức gốc:
+
+Before (trước khi): Cho phép thực thi một plugin trước khi phương thức gốc được gọi.
+Nếu trong plugin có trả về giá trị, phương thức gốc sẽ không được thực hiện và giá trị trả về từ plugin sẽ được trả về cho người dùng.
+
+Around (xung quanh): Cho phép thực thi một plugin trước và sau khi phương thức gốc được gọi.
+Plugin có thể thay đổi kết quả của phương thức gốc và quyết định xem phương thức gốc có được gọi hay không.
+
+After (sau khi): Cho phép thực thi một plugin sau khi phương thức gốc được gọi.
+Nếu trong plugin có trả về giá trị, giá trị đó sẽ được sử dụng thay thế cho giá trị trả về ban đầu của phương thức gốc.
+
+Các plugin cũng có thể được xếp chồng lên nhau để tùy chỉnh hành vi của một phương thức một cách linh hoạt và có thể áp dụng cho nhiều module khác nhau mà không cần chỉnh sửa mã gốc.
+
+Để tạo một plugin trong Magento, bạn cần tạo một class và đăng ký nó trong tệp di.xml của module của bạn.
+Class này cần triển khai một interface của Magento như Magento\Framework\Interception\InterceptorInterface và sử dụng các phương thức trước khi, xung quanh hoặc sau khi để thực thi các hành động tùy chỉnh vào phương thức gốc.

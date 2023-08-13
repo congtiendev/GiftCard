@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Mageplaza_GiftCard::giftcard_manage" title="Mageplaza" module="Mageplaza_GiftCard" sortOrder="50"
+             resource="Mageplaza_GiftCard::giftcard_manage"/>
+
+        <add id="Mageplaza_GiftCard::giftcard_title"
+             title="Gift Card"
+             module="Mageplaza_GiftCard" sortOrder="9"
+             parent="Mageplaza_GiftCard::giftcard_manage"
+             resource="Mageplaza_DevelopmentGuide::giftcard"
+        />
+
+        <add id="Mageplaza_GiftCard::giftcard_code"
+             sortOrder="8"
+             action="mageplaza_giftcard/code/index"
+             title="Manage Codes"
+             module="Mageplaza_GiftCard"
+             resource="Mageplaza_GiftCard::giftcard_code"
+             parent="Mageplaza_GiftCard::giftcard_title"
+             dependsOnConfig="giftcard_config/general/enabled"
+        />
+
+
+        <add id="Mageplaza_GiftCard::giftcard_config"
+             title="Configuration"
+             module="Mageplaza_GiftCard"
+             action="adminhtml/system_config/edit/section/giftcard_config" sortOrder="9"
+             resource="Mageplaza_GiftCard::giftcard_config"
+             parent="Mageplaza_GiftCard::giftcard_title"/>
+
+        <add id="Mageplaza_GiftCard::giftcard_crud"
+             title="TEST CRUD"
+             module="Mageplaza_GiftCard"
+             action="mageplaza_giftcard/crud/index" sortOrder="9"
+             resource="Mageplaza_GiftCard::giftcard_config"
+             parent="Mageplaza_GiftCard::giftcard_title"/>
+    </menu>
+</config>

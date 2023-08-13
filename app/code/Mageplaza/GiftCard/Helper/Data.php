@@ -1,0 +1,74 @@
+<?php
+
+namespace Mageplaza\GiftCard\Helper;
+
+use DateTime;
+use JsonException;
+use Zend_Log_Exception;
+use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\App\Helper\Context;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
+
+
+class Data extends AbstractHelper
+{
+    protected $scopeConfig;
+
+    public function __construct(Context $context, ScopeConfigInterface $scopeConfig)
+    {
+        parent::__construct($context);
+        $this->scopeConfig = $scopeConfig;
+    }
+
+    public function isGiftCardEnabled(): bool
+    {
+        return $this->scopeConfig->isSetFlag(
+            'giftcard_config/general/enabled',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    public function allowUsedGiftCardAtCheckout(): bool
+    {
+        return $this->scopeConfig->isSetFlag(
+            'giftcard_config/general/allow_used_giftcard_at_checkout',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    public function allowRedeemGiftCard(): bool
+    {
+        return $this->scopeConfig->isSetFlag(
+            'giftcard_config/general/allow_redeem_giftcard',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    public function getCodeLength(): int
+    {
+        return (int)$this->scopeConfig->getValue(
+            'giftcard_config/code_general/code_length',
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    public function generateGiftCode($codeLength): string
+    {
+        return substr(str_shuffle(str_repeat($x = 'ABCDEFGHIJKLMLOPQRSTUVXYZ0123456789', ceil($codeLength / strlen($x)))), 1, $codeLength);
+    }
+
+    public function formatDate($date)
+    {
+        return (new DateTime($date))->format('d/n/y');
+    }
+
+    public function debug($data): void
+    {
+        $writer = new \Zend_Log_Writer_Stream(BP . '/var/log/custom.log');
+        $logger = new \Zend_Log();
+        $logger->addWriter($writer);
+        $logger->info(json_encode($data, JSON_THROW_ON_ERROR));
+    }
+
+}

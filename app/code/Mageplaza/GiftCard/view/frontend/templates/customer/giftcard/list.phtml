@@ -1,0 +1,68 @@
+<?php
+/** @var \Mageplaza\GiftCard\Block\Customer\MyGiftCard\ListGift $block */
+$_giftCards = $block->getGiftCardHistory();
+$_isEnable = $block->isEnable();
+$_balance = $block->getBalance();
+?>
+<h2>Gift Card Information</h2>
+<hr>
+
+<div class="balance__redeem" style="display:flex; justify-content:space-between; align-items:center; padding-bottom:
+50px ">
+    <div class="balance">
+        <h4>Balance</h4>
+        <span>
+           <?php echo $_balance > 0 ? '$' . $_balance : '$0'; ?>
+        </span>
+    </div>
+    <?php if ($_isEnable): ?>
+
+        <div class="redeem">
+            <h4>Redeem</h4>
+            <form method="POST" action="<?php echo $block->getUrl('giftcard/customer/redeem') ?>"
+                  style=" display:flex; justify-content:space-between; align-items:center;
+                ">
+                <label>
+                    <input type="text" name="code" placeholder="Enter gift card code"
+                           style="padding:10px; border-radius:5px; border: 1px solid dodgerblue;" required>
+                </label>
+                <button type="submit" style="font-size:13px;padding:5px; border-radius:5px; background-color: dodgerblue;
+             color:white">
+                    Redeem
+                </button>
+            </form>
+        </div>
+    <?php endif; ?>
+</div>
+
+<?php if (count($_giftCards) > 0): ?>
+
+    <div class="table-wrapper downloadable-products">
+        <h2>History</h2>
+        <hr>
+        <table id="my-downloadable-products-table" class="data table table-downloadable-products">
+            <caption class="table-caption">History Gift Card</caption>
+            <thead>
+            <tr>
+                <th scope="col" class="col date">Date</th>
+                <th scope="col" class="col title">Code</th>
+                <th scope="col" class="col title">Amount</th>
+                <th scope="col" class="col actions">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($_giftCards as $giftCard): ?>
+                <tr>
+                    <td class="col date"><?php echo $block->formatDateTime($giftCard->getActionTime()) ?></td>
+                    <td class="col title"><?php echo $giftCard->getCode() ?></td>
+                    <td class="col title">$<?php echo $giftCard->getAmount() ?></td>
+                    <td class="col actions"><?php echo $giftCard->getAction() ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+<?php else: ?>
+    <div class="message info empty"><span><?php echo __('You have not gift card !'); ?></span></div>
+<?php endif; ?>
+

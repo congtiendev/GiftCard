@@ -1,0 +1,10 @@
+<page xmlns:xsi="//www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="customer_account"/>
+    <body>
+        <referenceContainer name="content">
+            <block class="Mageplaza\GiftCard\Block\Customer\MyGiftCard\ListGift" name="giftcard_customer_mygiftcart"
+                   template="Mageplaza_GiftCard::customer/giftcard/list.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

@@ -1,0 +1,231 @@
+Các bươc để tạo 1 Admin Grid trong Magento 2 :
+
+
+1. Setup database với InstallSchema
+2. Tạo route trong etc/adminhtml/routes.xml
+3. Tạo controller trong Controller/Adminhtml/Action.php
+4. Tạo menu trong etc/adminhtml/menu.xml và thêm route vào trong menu
+
+
+Tới bước này sẽ có 2 lựa chọn để tạo Grid :
+- Sử dụng UI Component
+- Sử dụng Block
+
+## Sử dụng UI Component
+
+    B1. Tạo file di.xml trong app/code/Vendor/Module/etc/di.xml
+      - File này sẽ khai báo các class cần thiết để tạo Grid, có tác dụng đăng ký các dependency injection (DI) trong module của bạn.
+        Dependency injection là một phương pháp quản lý phụ thuộc giữa các class trong Magento.
+
+        Trong Magento, DI cho phép bạn inject (tiêm) các class hoặc các đối tượng vào các class khác một cách tự động.
+        Điều này giúp giảm sự ràng buộc giữa các class và tạo ra các class có tính tái sử dụng cao hơn.
+
+        Trong file di.xml, bạn có thể khai báo các DI thông qua các thẻ <type>, <preference>, <virtualType>, <plugin>, và <arguments>.
+        Ví dụ:
+        Đăng ký một class thông qua <preference>:
+        <preference for="Vendor\Module\Api\SomeInterface" type="Vendor\Module\Model\SomeClass" />
+
+        Đăng ký một virtual type thông qua <virtualType>:
+        * virtualType là một class ảo được tạo ra bởi Magento, nó không có file class tương ứng.
+
+        Các DI sẽ được Magento tải vào bộ nhớ và quản lý khi ứng dụng chạy. Điều này giúp giảm tải và tăng hiệu suất cho hệ thống Magento.
+
+        Lưu ý rằng các DI trong di.xml sẽ được áp dụng trong phạm vi của module.
+        Để chạy lại các thay đổi trong file di.xml thì chạy lại command php bin/magento setup:di:compile để biên dịch lại DI container của Magento.
+
+
+      B2. Tạo file layout với cấu trúc tên vendor_module_controller_action
+
+      <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd">
+          <update handle="styles"/>
+          <body>
+              <referenceContainer name="content">
+                  <uiComponent name="vendor_module_controller_listing"/>
+              </referenceContainer>
+          </body>
+      </page>
+
+      Trong đoạn mã trên thì <uiComponent name="vendor_module_controller_listing"/>
+      sẽ gọi đến file ui_component của Grid.
+
+
+        B3. Tạo file ui_component trong app/code/Vendor/Module/view/adminhtml/ui_component/vendor_module_controller_listing.xml
+
+        <listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+
+            <argument>: Đây là một UI component dùng để truyền tham số và cấu hình cho các thành phần khác trong <listing>.
+                name="data": Định nghĩa tên của đối số, thường được sử dụng làm tên biến trong các thành phần con.
+                xsi:type="array": Xác định kiểu dữ liệu của đối số là một mảng.
+
+
+            <item>: Đây là một thành phần con trong <argument>. Nó định nghĩa các cấu hình khác nhau cho trang danh sách.
+            + name="js_config": Định nghĩa tên của đối số, được sử dụng như là một biến trong JavaScript.
+            + xsi:type="array": Xác định kiểu dữ liệu của đối số là một mảng.
+            * Các cấu hình trong <item>:
+                + provider: Định nghĩa nguồn cung cấp dữ liệu cho Grid.
+                + deps: Định nghĩa các phụ thuộc dữ liệu của trang danh sách.
+
+
+           <dataSource>: Định nghĩa nguồn dữ liệu cho Grid.
+                + name: Định nghĩa tên của nguồn dữ liệu, sẽ được sử dụng như một biến để tham chiếu đến nguồn dữ liệu
+                  trong các thành phần khác.
+                + component: Định nghĩa tên của UI component sẽ được sử dụng để hiển thị dữ liệu.
+                + provider: Định nghĩa nguồn cung cấp dữ liệu cho Grid.
+
+
+           <listingToolbar>: Định nghĩa thanh công cụ (toolbar) trên cùng của trang danh sách.
+                             Thường bao gồm các thành phần như <bookmark>, <columnsControls>, <filterSearch>,
+                             <filters>, <paging>, <exportButton>, v.v.
+
+
+           <columns>: Định nghĩa các cột hiển thị trên Grid.
+                + name="spinner_columns": Định nghĩa tên của cột, sẽ được sử dụng để tham chiếu đến cột trong các thành phần khác.
+                + Trong <columns> có các thành phần con <column> và <selectionsColumn>, mỗi thành phần con định nghĩa một cột trong Grid.
+
+
+           <bookmark>: Định nghĩa chức năng đánh dấu (bookmark) để lưu trạng thái của trang danh sách.
+           <columnsControls>: Định nghĩa các điều khiển cột để hiển thị hoặc ẩn các cột trong trang danh sách.
+           <filterSearch>: Định nghĩa hộp tìm kiếm để tìm kiếm dữ liệu trong trang danh sách.
+           <exportButton>: Định nghĩa nút xuất dữ liệu để xuất các mục trong trang danh sách ra
+
+        </listing>
+
+
+    B4. Xoá cache và chạy lại command php bin/magento setup:di:compile để biên dịch lại DI container của Magento.
+
+
+## Sử dụng Block
+    B1 : Tạo file Block trong app/code/Vendor/Module/Block/Adminhtml/BlockName.php
+
+        <?php
+        namespace Mageplaza\HelloWorld\Block\Adminhtml;
+
+        class Post extends \Magento\Backend\Block\Widget\Grid\Container
+        {
+
+        	protected function _construct()
+        	{
+        		$this->_controller = 'adminhtml_post';
+        		$this->_blockGroup = 'Mageplaza_HelloWorld';
+        		$this->_headerText = __('Posts');
+        		$this->_addButtonLabel = __('Create New Post');
+        		parent::_construct();
+        	}
+        }
+
+    Trong đoạn mã trên :
+        - $this->_controller = 'adminhtml_post'; : Định nghĩa tên của controller sẽ được sử dụng để tạo ra các URL trong Block.
+        - $this->_blockGroup = 'Mageplaza_HelloWorld'; :  Đây là tên của block group chứa block này. Tên này sẽ được sử
+          dụng khi cần gọi tới block này từ một vị trí khác trong mã nguồn Magento.
+        - $this->_headerText = __('Posts'); : Đây là tiêu đề của block.
+        - $this->_addButtonLabel = __('Create New Post'); : Đây là tiêu đề của nút thêm mới.
+
+
+    B2 : Tạo file layout trong app/code/Vendor/Module/view/adminhtml/layout/vendor_module_controller_action.xml
+
+        <?xml version="1.0"?>
+        <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+            <update handle="styles"/>
+            <body>
+                <referenceContainer name="content">
+                     <block class="Mageplaza\HelloWorld\Block\Adminhtml\Post" name="mageplaza_post_grid">
+                          <block class="Magento\Backend\Block\Widget\Grid" name="mageplaza_post_grid.grid" as="grid">
+
+                           </block>
+                     </block>
+                </referenceContainer>
+            </body>
+        </page>
+
+    Trong đoạn mã trên :
+        - <update handle="styles"/> : Đây là một handle được sử dụng để thêm các file CSS vào trang hiện tại.
+
+        - <referenceContainer name="content"> : Đây là một container được sử dụng để chứa các block khác.
+
+        - <block class="Mageplaza\HelloWorld\Block\Adminhtml\Post" name="mageplaza_post_grid"> : Đây là một block được sử dụng để hiển thị Grid.
+          + class="Mageplaza\HelloWorld\Block\Adminhtml\Post" : Đây là tên của class block.
+            + name="mageplaza_post_grid" : Đây là tên của block.
+
+        - <block class="Magento\Backend\Block\Widget\Grid\ColumnSet" name="mageplaza_post_grid.grid.columnSet" as="grid.columnSet">: Đây là một khối giao diện khác có tên là "mageplaza_post_grid.grid.columnSet" và là một instance của lớp "Magento\Backend\Block\Widget\Grid\ColumnSet".
+              Đây là nơi định nghĩa các cột của bảng dữ liệu
+            + class="Magento\Backend\Block\Widget\Grid" : Đây là tên của class block.
+            + name="mageplaza_post_grid.grid" : Đây là tên của block.
+            + as="grid" : Đây là tên của block, sẽ được sử dụng để tham chiếu đến block này trong các thành phần khác.
+
+    Các thành phần thường có trong block :
+
+    Các cấu hình của cột trong block <block class="Magento\Backend\Block\Widget\Grid\ColumnSet"
+    name="mageplaza_post_grid.grid.columnSet" as="grid.columnSet">:
+
+    <block class="Magento\Backend\Block\Widget\Grid\Column" as="post_id">: Định nghĩa cột "post_id" trong bảng dữ liệu.
+
+    <block class="Magento\Backend\Block\Widget\Grid\Column" as="name">: Định nghĩa cột "name" trong bảng dữ liệu.
+
+    <block class="Magento\Backend\Block\Widget\Grid\Column" as="created_at">: Định nghĩa cột "created_at" trong bảng dữ liệu.
+
+    <block class="Magento\Backend\Block\Widget\Grid\Column" as="updated_at">: Định nghĩa cột "updated_at" trong bảng dữ liệu.
+
+       <arguments>: là một thẻ XML trong tệp layout của Magento được sử dụng để định nghĩa các tham số và giá trị cấu
+           hình cho một khối giao diện (block) hoặc một thành phần giao diện khác.
+           Thẻ này cho phép truyền các thông số cấu hình vào các khối giao diện giúp điều khiển và cấu hình hành vi của chúng trong quá trình hiển thị trang web
+
+            <argument name="id" xsi:type="string">post_id</argument>: Định nghĩa ID của bảng dữ liệu. Trong trường hợp này, ID của bảng là "post_id".
+
+            <argument name="dataSource" xsi:type="object">Mageplaza\HelloWorld\Model\ResourceModel\Post\Collection</argument>:
+             Định nghĩa nguồn dữ liệu cho bảng. Trong trường hợp này, dữ liệu sẽ được lấy từ lớp "Mageplaza\HelloWorld\Model\ResourceModel\Post\Collection".
+
+            <argument name="default_sort" xsi:type="string">id</argument>:
+             Định nghĩa cột mặc định để sắp xếp dữ liệu. Trong trường hợp này, cột "id" (post_id) được sử dụng.
+
+            <argument name="default_dir" xsi:type="string">ASC</argument>:
+            Định nghĩa hướng sắp xếp mặc định (ASC hay DESC). Trong trường hợp này, hướng sắp xếp mặc định là ASC (tăng dần).
+
+            <argument name="save_parameters_in_session" xsi:type="string">1</argument>:
+            Định nghĩa xem liệu các tham số của grid có nên được lưu trong session không.
+            Trong trường hợp này, các tham số sẽ được lưu trong session (1 là true).
+
+            <argument name="css_class" xsi:type="string">data-grid</argument>:
+            Định nghĩa tên class của grid. Trong trường hợp này, tên class là "data-grid".
+
+            <argument name="grid_url" xsi:type="url" path="mageplaza_helloworld/post/grid">
+            Định nghĩa URL để lấy dữ liệu cho grid. Trong trường hợp này, URL là "mageplaza_helloworld/post/grid".
+
+            <argument name="filter_groups" xsi:type="array">
+            Định nghĩa các nhóm filter. Trong trường hợp này, chỉ có một nhóm filter được định nghĩa.
+
+            <item name="applied" xsi:type="boolean">false</item>:
+            Định nghĩa xem liệu filter này có được áp dụng hay không. Trong trường hợp này, filter này chưa được áp dụng (false).
+
+            <item name="placeholder" xsi:type="string" translate="true">Search Post</item>:
+            Định nghĩa placeholder cho filter. Trong trường hợp này, placeholder là "Search Post".
+
+            <item name="name" xsi:type="string">search_post</item>:
+            Định nghĩa tên của filter. Trong trường hợp này, tên của filter là "search_post".
+
+            <item name="filters" xsi:type="array">
+            Định nghĩa các filter con. Trong trường hợp này, chỉ có một filter con được định nghĩa.
+
+            <item name="applied" xsi:type="boolean">false</item>:
+            Định nghĩa xem liệu filter này có được áp dụng hay không. Trong trường hợp này, filter này chưa được áp dụng (false).
+
+            <item name="field" xsi:type="string">post_id</item>:
+            Định nghĩa tên của cột dữ liệu mà filter này sẽ áp dụng. Trong trường hợp này, filter này sẽ áp dụng cho cột "post_id".
+
+            <item name="placeholder" xsi:type="string" translate="true">ID</item>:
+            Định nghĩa placeholder cho filter. Trong trường hợp này, placeholder là "ID".
+
+            <item name="name" xsi:type="string">post_id</item>:
+            Định nghĩa tên của filter. Trong trường hợp này, tên của filter là "post_id".
+
+            <item name="is_visible" xsi:type="boolean">false</item>:
+            Định nghĩa xem liệu filter này có được hiển thị hay không. Trong trường hợp này, filter này sẽ không được hiển thị (false)
+
+            <item name="dateRange" xsi:type="array">
+            Định nghĩa các filter con. Trong trường hợp này, chỉ có một filter con được định nghĩa.
+
+
+            <item name="field" xsi:type="string">created_at</item>:
+            Định nghĩa tên của cột dữ liệu mà filter này sẽ áp dụng. Trong trường hợp này, filter này sẽ áp dụng cho cột "created_at".
+
+
+

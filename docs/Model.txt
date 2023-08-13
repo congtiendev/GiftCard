@@ -1,0 +1,87 @@
+Để tạo model trong Magento 2 cần thực hiện các bước sau :
+
+1. Thiết lập Database Schema (InstallSchema & InstallData)
+
+2. Tạo Model với cấu trúc : app/code/Vendor/Module/Model/
+    - Trong Model tạo các file :
+        - Model/ModelName.php :Lớp Model đại diện cho một bản ghi cụ thể trong cơ sở dữ liệu hoặc thực hiện các chức
+         năng xử lý logic.
+
+         <?php
+         namespace [Vendor]\[Module]\Model;
+
+         use Magento\Framework\Model\AbstractModel;
+
+         class [ModelName] extends AbstractModel
+         {
+             protected function _construct()
+             {
+                 $this->_init('[Vendor]\[Module]\Model\ResourceModel\[ModelName]');
+
+                 // $this->_init là  chỉ định lớp ResourceModel mà Model đó sẽ sử dụng để tương tác với cơ sở dữ liệu.
+                    Việc này thường được thực hiện trong phương thức _construct() của lớp Model để khởi tạo để khởi tạo lớp ResourceModel cho Model.
+
+             }
+         }
+
+
+        - Model/ResourceModel/ModelName.php : Chịu trách nhiệm xử lý việc truy vấn và tương tác với cơ sở dữ liệu.
+          Lớp này đại diện cho bảng trong cơ sở dữ liệu và thực hiện các hoạt động CRUD (Create, Read, Update, Delete) và tìm kiếm.
+
+          <?php
+          namespace [Vendor]\[Module]\Model;
+
+          use Magento\Framework\Model\AbstractModel;
+
+          class [ModelName] extends AbstractModel
+          {
+              protected function _construct()
+              {
+                  $this->_init('[Vendor]\[Module]\Model\ResourceModel\[ModelName]');
+              }
+          }
+
+
+        - Model/ResourceModel/ModelName/Collection.php : Lớp này đại diện cho một tập hợp các bản ghi trong cơ sở dữ liệu.
+          Nó cung cấp các phương thức để truy vấn và tương tác với cơ sở dữ liệu.
+
+        <?php
+        namespace [Vendor]\[Module]\Model\ResourceModel\[ModelName];
+
+        use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
+
+        class [ModelName]Collection extends AbstractCollection
+        {
+            protected function _construct()
+            {
+                $this->_init('[Vendor]\[Module]\Model\[ModelName]', '[Vendor]\[Module]\Model\ResourceModel\[ModelName]');
+            }
+        }
+
+
+        - Model/ModelNameFactory.php :  Factory là một lớp trung gian giúp  khởi tạo đối tượng Model mà không cần
+          trực tiếp sử dụng từ khóa new. Lớp Factory thường được sử dụng khi bạn muốn tạo một thể hiện của Model
+          trong các khối template hoặc các lớp không liên quan đến Model.
+
+         - Khi tạo một lớp Model trong Magento 2, ví dụ như lớp Post, Magento sẽ tự động tạo lớp Factory cho lớp
+           Post, có tên là PostFactory. => Không cần phải tạo lớp Factory này thủ công.
+
+          VD : public function getPost()
+                   {
+                       // Khởi tạo đối tượng Post bằng PostFactory
+                       $post = $this->postFactory->create();
+                       return $post;
+                   }
+          =>  Không cần phải gọi trực tiếp new Post() mà thay vào đó sử dụng phương thức create() của Factory để khởi
+              tạo đối tượng Model Post. Factory sẽ tự động xử lý việc tạo đối tượng.
+
+
+          ModelName.php trong thư mục Model đại diện cho dữ liệu của một bản ghi cụ thể trong bảng.
+          ModelName.php trong thư mục Model/ResourceModel chịu trách nhiệm xử lý việc truy vấn và tương tác với cơ sở dữ
+          liệu cho model.
+          Lớp ModelName.php trong thư mục Model/ResourceModel/ModelName/Collection.php đại diện cho một
+
+
+
+
+

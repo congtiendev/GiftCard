@@ -1,0 +1,38 @@
+app/code/[Namespace]/[ModuleName]
+|-- Block
+|-- Controller
+|-- etc
+|   |-- di.xml
+|   |-- module.xml
+|   |-- acl.xml
+|   |-- menu.xml
+|   |-- frontend
+|   |   |-- routes.xml
+|   |   |-- [Area]_routes.xml (nếu module có các routes riêng cho từng khu vực)
+|   |-- adminhtml
+|       |-- routes.xml
+|-- Helper
+|-- Model
+|-- view
+|   |-- frontend (nếu có)
+|   |   |-- layout
+|   |   |-- templates
+|   |-- adminhtml (nếu có)
+|       |-- layout
+|       |-- templates
+|-- registration.php
+
+
+Block: Thư mục "Block" chứa các lớp PHP (Block) được sử dụng để thực hiện logic và truy xuất dữ liệu cho giao diện.
+
+Controller: Thư mục "Controller" chứa các lớp điều khiển (Controller) xử lý các yêu cầu của người dùng và trả về kết quả tương ứng.
+
+etc: Thư mục "etc" chứa các tệp cấu hình cho module như "di.xml" (dependency injection), "module.xml" (thông tin về module), "acl.xml" (quyền truy cập), "menu.xml" (menu admin), "routes.xml" (các routes của module).
+
+Helper: Thư mục "Helper" chứa các lớp hỗ trợ (Helper) chia sẻ chức năng trong toàn bộ module.
+
+Model: Thư mục "Model" chứa các lớp (Model) xử lý dữ liệu và logic nghiệp vụ của module.
+
+view: Thư mục "view" chứa các tệp liên quan đến giao diện của module. Các tệp giao diện này có thể nằm trong thư mục "frontend" (giao diện trang web) hoặc "adminhtml" (giao diện trang quản trị) tùy thuộc vào khu vực áp dụng.
+
+registration.php: Tệp "registration.php" đăng ký module với Magento và cung cấp thông tin cần thiết để Magento nhận dạng và tải module.

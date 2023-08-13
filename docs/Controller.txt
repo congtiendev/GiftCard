@@ -1,0 +1,128 @@
+Các bước để tạo một Controller và sử dụng nó thông qua route và view trong Magento
+
+B1: Tạo một routes.xml trong app/code/Namespace/etc/frontend/routes.xml
+    - Namespace: tên của module
+    - etc : thư mục chứa file cấu hình của module
+    - frontend: thư mục chứa routes.xml
+    - routes.xml: file cấu hình route
+    - Khai báo và định nghĩa routes :
+
+    <?xml version="1.0" ?>
+    <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+        <router id="standard">
+            <route frontName="helloworld" id="helloworld">
+                <module name="Mageplaza_HelloWorld"/>
+            </route>
+        </router>
+    </config>
+
+    - frontName: tên của route sử dụng trong url
+    - id: id của route (không bắt buộc) dùng để phân biệt các route với nhau
+    - module: tên của module chứa route
+
+
+
+B2: Tạo một Controller trong app/code/Namespace/Controller/Action.php
+    - Namespace: tên của module
+    - Controller: thư mục chứa Controller
+    - Action.php: file controller
+
+    - Khai báo và định nghĩa Controller:
+
+    class Index extends \Magento\Framework\App\Action\Action
+    {
+    	protected $_pageFactory;
+
+    	public function __construct(
+    		\Magento\Framework\App\Action\Context $context,
+    		\Magento\Framework\View\Result\PageFactory $pageFactory)
+    	{
+    		$this->_pageFactory = $pageFactory;
+    		return parent::__construct($context);
+    	}
+
+    	public function execute()
+    	{
+    		return $this->_pageFactory->create();
+    	}
+    }
+
+    - Trong đoạn mã trên :
+        + Index: tên của controller
+
+        + \Magento\Framework\App\Action\Action: là một class abstract, nó chứa các phương thức cơ bản để thực thi một action
+
+        + protected $_pageFactory;: Biến $_pageFactory được khai báo để lưu trữ đối tượng của lớp \Magento\Framework\View\Result\PageFactory,
+          dùng để trả về kết quả của action dưới dạng trang (page).
+
+        + \Magento\Framework\App\Action\Context $context: là một đối tượng context, nó chứa các thông tin cần thiết để thực thi một action
+
+        + \Magento\Framework\View\Result\PageFactory $pageFactory: là một đối tượng pageFactory, nó chứa các thông tin cần thiết để tạo ra một page
+
+        + return parent::__construct($context);: Trong hàm khởi tạo, ta gọi hàm khởi tạo của lớp cha
+          \Magento\Framework\App\Action\Action thông qua parent::__construct($context) để khởi tạo các thành phần cơ bản của action.
+
+        + execute(): Đây là hàm thực hiện action "execute". Hàm này được gọi khi route gọi đến controller "Index". Trong hàm này, ta đơn giản là trả về kết quả của action dưới dạng trang (page)
+          bằng cách sử dụng đối tượng page factory đã được khởi tạo ở hàm construct.
+
+        + $this->_pageFactory->create(): trả về một page
+
+    - Đến bước này thì có thể truy cập vào url với cấu trúc /frontname/controller/action để xem kết quả VD :
+    /helloworld/index/index
+
+
+
+B3: Tạo Block trong app/code/Namespace/Module/Block/BlockName.php
+
+    - Namespace: tên của module
+    - Module: thư mục chứa Block
+    - BlockName.php: file Block
+
+    - Khai báo và định nghĩa Block:
+
+    <?php
+    namespace Mageplaza\HelloWorld\Block;
+
+    class BlockName extends \Magento\Framework\View\Element\Template
+    {
+    	public function getHelloWorldTxt()
+    	{
+    		return 'Hello world!';
+    	}
+    }
+
+    - Trong đó :
+        + BlockName: tên của block
+
+        + \Magento\Framework\View\Element\Template: là một class abstract, nó chứa các phương thức cơ bản để thực thi một block
+
+        + getHelloWorldTxt(): là một hàm public, nó trả về một chuỗi "Hello world!"
+
+
+* Lưu ý tên thư mục templates phải có chữ "templates" không được viết sai thành "template"
+
+B4: Tạo layout trong app/code/Namespace/view/frontend/layout/layout_name.xml
+    - Cách đặt tên layout : frontname_controllername_actionname.xml
+    - Khai báo và định nghĩa layout:
+
+       <?xml version="1.0"?>
+       <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+           <referenceContainer name="content">
+               <block class="Namespace\Module\Block\BlockName" name="namepace_module_blockname"
+               template=Nampace_Module::template_name.phtml" />
+           </referenceContainer>
+       </page>
+
+    - Trong đó :
+        + <layout="1column": là layout mặc định của Magento 2 (có thể thay đổi)>
+        + <referenceContainer name="content": là một container, nó chứa các block con>
+
+        + <block class="Namespace\Module\Block\BlockName": là một khối  chứa các thành phần hiển thị trên trang>
+            * name="namepace_module_blockname" : là tên của khối dùng để gọi khối trong layout hoặc template
+            * template=Nampace_Module::template_name.phtml" : dẫn đến file template trong templates
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+

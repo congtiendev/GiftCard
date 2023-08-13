@@ -1,0 +1,20 @@
+ui_component layout:
+
+Mục tiêu: ui_component layout được sử dụng để tạo các thành phần giao diện (UI components) trong phần quản trị (backend) của Magento.
+Chẳng hạn, khi bạn muốn tạo một trang danh sách dữ liệu như danh sách sản phẩm, danh sách đơn hàng,
+bạn có thể sử dụng ui_component để xây dựng các thành phần của trang này như bảng dữ liệu, tùy chọn lọc, phân trang, v.v.
+ách sử dụng: Để sử dụng ui_component, bạn tạo một tệp tin XML trong thư mục view/adminhtml/ui_component của module.
+Trong tệp tin này, bạn định nghĩa các UI components bằng cách sử dụng các thẻ XML như <listing>, <dataSource>, <columns>, <filterSearch>, <paging>, v.v.
+
+
+block layout:
+
+Mục tiêu: block layout được sử dụng để quản lý cấu trúc và thứ tự hiển thị các khối giao diện trong cả trang frontend và backend của Magento.
+Nó cho phép bạn sắp xếp các khối giao diện theo ý muốn và chèn chúng vào các vị trí cụ thể của trang.
+Cách sử dụng: Để sử dụng block layout, bạn tạo một tệp tin XML trong thư mục view/adminhtml/layout (backend)
+hoặc view/frontend/layout (frontend) của module. Trong tệp tin này, bạn định nghĩa các khối giao diện bằng cách sử dụng các thẻ XML như <referenceContainer>, <container>, <block>, v.v.
+
+=> Tóm lại, ui_component layout dùng để tạo các thành phần giao diện đặc thù trong phần quản trị của Magento,
+trong khi block layout dùng để quản lý cấu trúc tổng thể và các khối giao diện trong cả frontend và backend của Magento.
+Nói một cách khác :
+ui_component layout hướng đến việc tạo các thành phần dữ liệu và hiển thị, trong khi block layout hướng đến việc quản lý sắp xếp và cấu trúc của các khối giao diện.

@@ -1,0 +1,170 @@
+Các bước tạo 1 Configuration mới:
+
+Bước 1 : Tạo 1 file system.xml trong thư mục etc/adminhtml của module
+
+Bước 2 : Thêm code sau vào file system.xml
+
+    <?xml version="1.0"?>
+        <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+            <system>
+                *--------Tab là một thẻ trong Configuration, mỗi tab sẽ có một id riêng---------*
+
+                <tab id="mageplaza" translate="label" sortOrder="10">
+                    <label>Tên tab VD : CATALOG, CUSTOMER, SALE...</label>
+                </tab>
+
+                *--------Section là một thẻ con của tab, mỗi section sẽ có một id riêng. Khi nhấn vào tab sẽ
+                hiện dropdown các group---------*
+                *--------Các mục có trong thẻ section : label, sortOrder, showInDefault, showInWebsite, showInStore---------*
+
+                translate="label":
+                Tác dụng: Xác định xem liệu nhãn (label) của phần tử có nên được dịch sang các ngôn ngữ khác hay không.
+                Cách hoạt động: Khi bạn đặt translate="label" cho một phần tử trong tệp cấu hình XML,
+                điều này cho biết rằng chuỗi nhãn của phần tử này có thể được dịch sang các ngôn ngữ khác trong Magento.
+                Điều này hữu ích khi bạn muốn hỗ trợ nhiều ngôn ngữ trong cửa hàng của mình.
+
+                sortOrder: Xác định thứ tự hiển thị của phần tử trong tab. (Số càng nhỏ thì càng hiển thị trước)
+
+                showInDefault: Xác định liệu phần tử có hiển thị trong mục "Default Config" (Cấu hình mặc định) hay
+                không. (1 là hiển thị, 0 là không hiển thị)
+                showInWebsite: Xác định liệu phần tử có hiển thị trong mục "Website" (Cấu hình của website) hay không.
+                showInStore: Xác định liệu phần tử có hiển thị trong mục "Store View" (Cấu hình của cửa hàng) hay không.
+
+
+                <section id="developmentguide" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1"
+                     showInStore="1">section
+                    <label>Tên section VD : Development Guide</label>
+                    <tab>Tab mà section này thuộc về VD : mageplaza</tab> (Điền id của tab vào đây)
+
+                    <resource> được sử dụng để xác định quyền truy cập vào phần cấu hình. Quyền truy cập này được sử dụng để kiểm soát người dùng nào có quyền xem
+                    và chỉnh sửa phần cấu hình này trong trang quản trị Magento.
+                    Cú pháp :<resource>Vendor_Module::resource_name</resource>
+                    Tên resource do mình tự đặt và không được trùng với resource của các module khác. custom_resource, order_management, customer_info,...
+                    Tên resource có thể được thêm vào tệp ACL đặt trong thư mục etc/adminhtml của mô-đun để kiểm soát quyền truy
+                    cập vào phần cấu hình.
+
+                    <resource>Mageplaze_DevelopmentGuide::developmentguide_config</resource>
+
+                     <group>  là gom nhóm các trường (fields) Configuration liên quan lại với nhau. Gom nhóm các tùy
+                     chọn Configuration thành các phần nhỏ hơn, giúp tạo ra cấu trúc cấu hình rõ ràng và dễ quản lý hơn.
+
+                    <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0"
+                                       showInStore="0">
+                        <label>Tên group </label>
+
+                        <field> là những tùy chọn mà người dùng có thể thay đổi giá trị trong trang cấu hình của Magento.
+
+                        canRestore="1" : Cho phép người dùng khôi phục lại giá trị mặc định của field được định nghĩa
+                        trong file config.xml của module. Nó sẽ loại bỏ giá trị được lưu trong bảng core_config_data của
+                        Magento và sử dụng giá trị mặc định được định nghĩa trong file config.xml của module.
+
+                        Nếu không có thuộc tính canRestore="1" thì người dùng sẽ tự phải nhập lại
+                        giá trị mặc định. (Các giá trị này sẽ được lưu trong bảng core_config_data của cơ sở dữ liệu Magento)
+
+                        <field> cung cấp các thuộc tính sau:
+                            - id: Định danh duy nhất của field. Được sử dụng để xác định giá trị của field trong cơ sở dữ liệu.
+                            - type: Xác định loại của field. Các loại field có sẵn trong Magento:
+                                + label: Hiển thị một nhãn (label) không thể chỉnh sửa.
+                                + text: Hiển thị một trường văn bản (text field) có thể chỉnh sửa.
+                                + select: Hiển thị một trường dropdown list có thể chỉnh sửa.
+                                + multiselect: Hiển thị một trường checkbox list có thể chỉnh sửa.
+                                + textarea: Hiển thị một trường văn bản (text area) có thể chỉnh sửa.
+                                + file: Hiển thị một trường tải lên tệp (file upload) có thể chỉnh sửa.
+                                + image: Hiển thị một trường tải lên hình ảnh (image upload) có thể chỉnh sửa.
+                                + button: Hiển thị một nút (button) không thể chỉnh sửa.
+                                + password: Hiển thị một trường mật khẩu (password field) có thể chỉnh sửa.
+                                + hidden: Hiển thị một trường ẩn (hidden field) không thể chỉnh sửa.
+                                + note: Hiển thị một ghi chú (note) không thể chỉnh sửa.
+                                + date: Hiển thị một trường ngày (date field) có thể chỉnh sửa.
+                                + time: Hiển thị một trường thời gian (time field) có thể chỉnh sửa.
+                                + datetime: Hiển thị một trường ngày và thời gian (date time field) có thể chỉnh sửa.
+                                + widget: Hiển thị một trường widget có thể chỉnh sửa.
+                                + container: Hiển thị một phần tử container không thể chỉnh sửa.
+                                + dynamicRows: Hiển thị một trường dynamic rows có thể chỉnh sửa.
+                                + hidden: Hiển thị một trường ẩn (hidden field) không thể chỉnh sửa.
+                                ...
+
+                        <field id="enable_general" translate="label" type="text" sortOrder="10" showInDefault="1"
+                               showInWebsite="0" showInStore="0" canRestore="1">
+                            <label>Label của field VD : Enable</label>
+
+                             <source_model> là một lớp model được sử dụng để cung cấp các tùy chọn cho field. Các tùy
+                             chọn này sẽ được hiển thị trong một dropdown list hoặc một checkbox list.
+                            Các tùy chọn này có thể được lấy từ một bảng trong cơ sở dữ liệu hoặc được định nghĩa
+                            trong một lớp model.
+
+                            - Model tự định nghĩa : <source_model>Vendor\Module\Model\Source\SourceModelName</source_model> (Đường dẫn
+                             đến lớp model)
+                            - Model có sẵn trong Magento :
+                                <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                                <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                                <source_model>Magento\Config\Model\Config\Source\Locale</source_model>
+                                ...
+
+                            <comment> Nhập mô tả hoặc url  </comment>
+                         </field>
+                </section>
+          </system>
+        </config>
+
+
+Bước 3 : Tạo 1 file config.xml trong thư mục etc của module
+
+       <?xml version="1.0"?>
+       <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+
+           <frontend>
+               <routers>
+                   <router_id>
+                       <area>frontend</area>
+                       <class>Vendor\Module\Controller</class>
+                   </router_id>
+               </routers>
+           </frontend>
+
+           <default>
+               <section_id>
+                   <group_id>
+                       <field_id>default_value</field_id>
+                   </group_id>
+               </section_id>
+           </default>
+
+
+           <global>
+               <models>
+                   <module_model>
+                       <class>Vendor\Module\Model</class>
+                   </module_model>
+               </models>
+           </global>
+       </config>
+
+        Cơ bản thì chỉ cần thẻ <default> là đủ, nhưng để tạo ra 1 module hoàn chỉnh thì cần phải có các thẻ sau :
+           <frontend>: Định nghĩa các tùy chọn cấu hình cho phần giao diện người dùng (frontend) của mô-đun.
+           <routers>: Định nghĩa các bộ định tuyến (router) của mô-đun. Điều này sẽ chỉ định định tuyến cho các URL frontend của mô-đun đến các controllers tương ứng.
+           <default>: Định nghĩa các giá trị mặc định cho cấu hình của mô-đun.
+           <global>: Định nghĩa các tùy chọn cấu hình toàn cục (global) của mô-đun.
+           <models>: Định nghĩa các model của mô-đun. Các model này sẽ được sử dụng để truy cập và xử lý dữ liệu trong cơ sở dữ liệu.
+
+Bước 4 : Tạo 1 file routes.xml trong thư mục etc/frontend của module
+
+        <?xml version="1.0"?>
+        <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+            <router id="router_id">
+                <route id="route_id" frontName="frontName">
+                    <module name="Vendor_Module"/>
+                </route>
+            </router>
+        </config>
+
+        - router_id : Định danh của router. Đây là một định danh duy nhất cho router.
+        - route_id : Định danh của route. Đây là một định danh duy nhất cho route.
+        - frontName : Định danh của frontName. Đây là một định danh duy nhất cho frontName.
+        - module name : Định danh của module. Đây là một định danh duy nhất cho module.
+
+
+
+

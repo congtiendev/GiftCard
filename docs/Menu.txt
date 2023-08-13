@@ -1,0 +1,41 @@
+Các bước để tạo menu trong Magento 2 :
+
+Bước 1: Tạo file menu.xml trong thư mục app/code/YourCompany/YourModule/etc/adminhtml
+File sẽ có nội dung như sau :
+
+    <?xml version="1.0"?>
+    <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+        <menu>
+            <!-- Trong <menu> chứa các thẻ <add> -->
+            <add>: Đây là một thẻ con trong phần <menu> để định nghĩa một menu hoặc mục menu. Các thuộc tính chính bao gồm:
+                id: Định danh duy nhất cho menu hoặc mục menu. Nó cần phải là một chuỗi duy nhất và không trùng lặp với
+                các định danh khác trong cùng một tệp. Cấu trúc của id là: Vendor_Module::menu_id
+                title: Tiêu đề hiển thị của menu hoặc mục menu.
+                module: Tên của mô-đun sở hữu menu hoặc mục menu.
+                sortOrder: Thứ tự hiển thị của menu hoặc mục menu. Menu hoặc mục menu có sortOrder nhỏ hơn sẽ hiển thị trước.
+                resource: (Tùy chọn) Nếu bạn muốn áp đặt quyền truy cập cho menu hoặc mục menu, bạn có thể định nghĩa một resource và xác định quyền tương ứng trong phân quyền (ACL).
+                action: (Chỉ dùng cho mục menu) Định nghĩa action (route/controller/action) mà mục menu sẽ chuyển hướng đến khi được chọn.
+                parent: (Chỉ dùng cho mục menu) Định nghĩa định danh của menu cha mà mục menu này thuộc về.
+                        Các mục menu với parent tương ứng sẽ hiển thị dưới menu cha đó.
+
+            <!-- Thẻ add đầu tiên là tên menu nên sẽ không có action -->
+            <add id="Namespace_ModuleName::yourmodule" title="Menu name" module="Namespace_ModuleName" sortOrder="10"
+            resource="Namespace_ModuleName::yourmodule"/>
+
+            <add id="Namespace_ModuleName::yourmodule_item" title="Menu name item"
+            module="Namespace_ModuleName"
+            sortOrder="10" parent="Namespace_ModuleName::yourmodule" action="yourmodule/index/index"
+            resource="Namespace_ModuleName::yourmodule_item"/>
+
+            * Cấu trúc action="yourmodule/index/index" : yourmodule là router, index là controller, index là action
+
+            VD : Tạo <add> dẫn đến trang developmentguide trong Configuration
+            <add id="Namespace_ModuleName::developmentguide" title="Development Guide" module="Namespace_ModuleName"
+             sortOrder="10" resource="Namespace_ModuleName:::developmentguide"
+             action="adminhtml/system_config/edit/section/developmentguide"/>
+
+             * Cấu trúc action="adminhtml/system_config/edit/section/section_id (section_id là id của section trong
+             system.xml)
+        </menu>
+    </config>guide

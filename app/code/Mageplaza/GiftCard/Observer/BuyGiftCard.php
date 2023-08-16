@@ -2,22 +2,24 @@
 
 namespace Mageplaza\GiftCard\Observer;
 
-use Magento\Sales\Model\Order;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Mageplaza\GiftCard\Model\GiftCardFactory;
 use Mageplaza\GiftCard\Model\GiftCardHistoryFactory;
 use Mageplaza\GiftCard\Helper\Data as GiftCardHelper;
+use Magento\Framework\Message\ManagerInterface as MessageManager;
 use Magento\Catalog\Api\ProductRepositoryInterface as ProductRepository;
 
 class BuyGiftCard implements ObserverInterface
 {
-    protected $giftCardHelper;
-    protected $giftCardFactory;
-    protected $productRepository;
-    protected $giftCardHistoryFactory;
+    protected GiftCardHelper $giftCardHelper;
+    protected MessageManager $messageManager;
+    protected GiftCardFactory $giftCardFactory;
+    protected ProductRepository $productRepository;
+    protected GiftCardHistoryFactory $giftCardHistoryFactory;
 
     public function __construct(
+        MessageManager         $messageManager,
         GiftCardHelper         $giftCardHelper,
         GiftCardFactory        $giftCardFactory,
         ProductRepository      $productRepository,
@@ -25,6 +27,7 @@ class BuyGiftCard implements ObserverInterface
     )
     {
         $this->giftCardHelper = $giftCardHelper;
+        $this->messageManager = $messageManager;
         $this->giftCardFactory = $giftCardFactory;
         $this->productRepository = $productRepository;
         $this->giftCardHistoryFactory = $giftCardHistoryFactory;
@@ -33,72 +36,52 @@ class BuyGiftCard implements ObserverInterface
     public function execute(Observer $observer)
     {
         $order = $observer->getOrder();
-        $virtualOrderItems = $this->getVirtualOrderItems($order);
-
-        if (!empty($virtualOrderItems)) {
-            $this->createGiftCards($virtualOrderItems, $order);
-        }
-    }
-
-    protected function getVirtualOrderItems(Order $order): array
-    {
-        $virtualOrderItems = [];
+        $customerId = $order->getCustomerId();
+        $codeLength = $this->giftCardHelper->getCodeLength();
 
         foreach ($order->getAllItems() as $item) {
             if ($item->getProductType() === 'virtual') {
+                // Get product by id
                 $productId = $item->getProductId();
                 $product = $this->productRepository->getById($productId);
                 $giftCardAmount = $product->getCustomAttribute('giftcard_amount');
 
-                if ($giftCardAmount) {
-                    $item->setData('giftcard_amount', $giftCardAmount->getValue());
-                    $virtualOrderItems[] = $item;
-                }
-            }
-        }
+                // Check gift card amount value
+                if (isset($giftCardAmount) && $giftCardAmount->getValue() > 0) {
+                    for ($i = 0; $i < $item->getQtyOrdered(); $i++) {
+                        $giftCardCode = $this->giftCardFactory->create();
+                        $giftCardHistory = $this->giftCardHistoryFactory->create();
+                        // Random gift code
+                        $giftCode = $this->giftCardHelper->generateGiftCode($codeLength);
 
-        return $virtualOrderItems;
-    }
+                        $giftCardData = [
+                            'code' => $giftCode,
+                            'amount_used' => 0,
+                            'balance' => $giftCardAmount->getValue(),
+                            'created_from' => $order->getIncrementId(),
+                        ];
 
-    protected function createGiftCards(array $items, Order $order): void
-    {
-        $customerId = $order->getCustomerId();
-        $codeLength = $this->giftCardHelper->getCodeLength();
+                        try {
+                            // Save gift card code
+                            $giftCardCode->addData($giftCardData)->save();
+                            $giftCardHistoryData = [
+                                'giftcard_id' => $giftCardCode->getId(),
+                                'customer_id' => $customerId,
+                                'amount' => $giftCardAmount->getValue(),
+                                'action' => 'Create',
+                            ];
+                            // Add gift card history data
+                            $giftCardHistory->addData($giftCardHistoryData);
+                        } catch (\Exception $e) {
+                            $this->messageManager->addErrorMessage(__('Buy Gift Card Error ! Please try again.'));
+                        }
 
-        foreach ($items as $item) {
-            $qty = $item->getQtyOrdered();
-
-            for ($i = 0; $i < $qty; $i++) {
-                $giftCode = $this->giftCardHelper->generateGiftCode($codeLength);
-
-                $giftCardCode = $this->giftCardFactory->create();
-                $giftCardData = [
-                    'code' => $giftCode,
-                    'amount_used' => 0,
-                    'balance' => $item->getData('giftcard_amount'),
-                    'created_from' => $order->getIncrementId(),
-                    'created_at' => date('Y-m-d H:i:s'),
-                ];
-
-                try {
-                    $giftCardCode->addData($giftCardData)->save();
-                } catch (\Exception $e) {
-                    $this->giftCardHelper->debug('Error when creating gift card code: ' . $e->getMessage());
-                }
-
-                $giftCardHistory = $this->giftCardHistoryFactory->create();
-                $giftCardHistoryData = [
-                    'giftcard_id' => $giftCardCode->getId(),
-                    'customer_id' => $customerId,
-                    'amount' => $item->getData('giftcard_amount'),
-                    'action' => 'Create',
-                    'action_time' => date('Y-m-d H:i:s'),
-                ];
-
-                try {
-                    $giftCardHistory->addData($giftCardHistoryData)->save();
-                } catch (\Exception $e) {
-                    $this->giftCardHelper->debug('Error when creating gift card history: ' . $e->getMessage());
+                        try {
+                            $giftCardHistory->save();
+                        } catch (\Exception $e) {
+                            $this->messageManager->addErrorMessage(__('Insert History Error ! Please try again.'));
+                        }
+                    }
                 }
             }
         }

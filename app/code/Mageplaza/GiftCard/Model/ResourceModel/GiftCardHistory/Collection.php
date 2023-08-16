@@ -18,4 +18,16 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         $this->_init(ModelGiftCardHistory::class, ResourceModelGiftCardHistory::class);
     }
 
+    public function getListHistory($customerId): Collection
+    {
+        $this->getSelect()->joinLeft(
+            ['giftcard_code' => $this->getTable('giftcard_code')],
+            'main_table.giftcard_id = giftcard_code.giftcard_id',
+            ['code']
+        )->order('main_table.action_time DESC');
+        $this->addFieldToFilter('customer_id', $customerId);
+        return $this;
+    }
+
+
 }

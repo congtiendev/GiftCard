@@ -38,7 +38,6 @@ class Save extends Action
             $this->messageManager->addErrorMessage(__('Gift Card could not be saved.'));
         }
 
-
         return $this->_redirect('*/*/index');
     }
 }

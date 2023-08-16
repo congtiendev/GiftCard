@@ -1,7 +1,9 @@
-<?php
+<?php use Magento\Framework\Pricing\Helper\Data;
+
 /** @var \Mageplaza\GiftCard\Block\Customer\MyGiftCard\ListGift $block */
 $_giftCards = $block->getGiftCardHistory();
 $_isEnable = $block->isEnable();
+$_allowRedeem = $block->allowRedeemGiftCard();
 $_balance = $block->getBalance();
 ?>
 <h2>Gift Card Information</h2>
@@ -12,11 +14,12 @@ $_balance = $block->getBalance();
     <div class="balance">
         <h4>Balance</h4>
         <span>
-           <?php echo $_balance > 0 ? '$' . $_balance : '$0'; ?>
+           <?php echo $_balance > 0 ? $this->helper(Data::class)->currency
+           ($_balance) : $this->helper(Data::class)->currency
+           (0); ?>
         </span>
     </div>
-    <?php if ($_isEnable): ?>
-
+    <?php if ($_isEnable && $_allowRedeem): ?>
         <div class="redeem">
             <h4>Redeem</h4>
             <form method="POST" action="<?php echo $block->getUrl('giftcard/customer/redeem') ?>"
@@ -55,7 +58,8 @@ $_balance = $block->getBalance();
                 <tr>
                     <td class="col date"><?php echo $block->formatDateTime($giftCard->getActionTime()) ?></td>
                     <td class="col title"><?php echo $giftCard->getCode() ?></td>
-                    <td class="col title">$<?php echo $giftCard->getAmount() ?></td>
+                    <td class="col title"><?= $this->helper(Data::class)->currency
+                        ($giftCard->getAmount()) ?></td>
                     <td class="col actions"><?php echo $giftCard->getAction() ?></td>
                 </tr>
             <?php endforeach; ?>

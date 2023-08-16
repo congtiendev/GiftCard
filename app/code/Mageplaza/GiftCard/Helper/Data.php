@@ -5,20 +5,23 @@ namespace Mageplaza\GiftCard\Helper;
 use DateTime;
 use JsonException;
 use Zend_Log_Exception;
-use Magento\Framework\App\Helper\AbstractHelper;
-use Magento\Framework\App\Helper\Context;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
+use Magento\Framework\App\Helper\Context;
+use Mageplaza\GiftCard\Model\GiftCardFactory;
+use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 
 class Data extends AbstractHelper
 {
     protected $scopeConfig;
+    protected $giftCardFactory;
 
-    public function __construct(Context $context, ScopeConfigInterface $scopeConfig)
+    public function __construct(Context $context, ScopeConfigInterface $scopeConfig, GiftCardFactory $giftCardFactory)
     {
         parent::__construct($context);
         $this->scopeConfig = $scopeConfig;
+        $this->giftCardFactory = $giftCardFactory;
     }
 
     public function isGiftCardEnabled(): bool
@@ -55,12 +58,29 @@ class Data extends AbstractHelper
 
     public function generateGiftCode($codeLength): string
     {
-        return substr(str_shuffle(str_repeat($x = 'ABCDEFGHIJKLMLOPQRSTUVXYZ0123456789', ceil($codeLength / strlen($x)))), 1, $codeLength);
+        $code = substr(str_shuffle(str_repeat($x = 'ABCDEFGHIJKLMLOPQRSTUVXYZ0123456789', ceil($codeLength / strlen($x))
+        )), 1, $codeLength);
+        $giftCard = $this->giftCardFactory->create();
+        $giftCard->load($code, 'code');
+        if ($giftCard->getId()) {
+            $this->generateGiftCode($codeLength);
+        }
+        return $code;
     }
 
     public function formatDate($date)
     {
         return (new DateTime($date))->format('d/n/y');
+    }
+
+    public function getMyGiftCardUrl(): string
+    {
+        return $this->_getUrl('giftcard/index/mygiftcard');
+    }
+
+    public function getRefererUrl(): string
+    {
+        return $this->_getRequest()->getServer('HTTP_REFERER');
     }
 
     public function debug($data): void

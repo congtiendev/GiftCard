@@ -67,7 +67,7 @@ class ApplyGiftCard implements ObserverInterface
                 $this->checkoutSession->unsCode();
                 $this->checkoutSession->unsAmount();
                 $this->messageManager->addSuccessMessage(__('You canceled the gift card. 🎁🎁🎁'));
-            }
+            }asdasdas
         }
     }
 }

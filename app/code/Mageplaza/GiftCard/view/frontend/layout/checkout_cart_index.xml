@@ -10,11 +10,11 @@
                             <item name="children" xsi:type="array">
                                 <item name="giftcard_discount" xsi:type="array">
                                     <item name="component" xsi:type="string">
-                                        Mageplaza_Giftcard/js/view/checkout/summary/giftcard_discount
+                                        Mageplaza_GiftCard/js/view/checkout/summary/giftcarddiscount
                                     </item>
                                     <item name="sortOrder" xsi:type="string">20</item>
                                     <item name="config" xsi:type="array">
-                                        <item name="giftcard_discount" xsi:type="string" translate="true">Giftcard
+                                        <item name="giftcard_discount" xsi:type="string" translate="true">GiftCard
                                         </item>
                                     </item>
                                 </item>

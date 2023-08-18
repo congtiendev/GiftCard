@@ -6,38 +6,44 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Mageplaza\GiftCard\Model\GiftCardFactory;
 use Mageplaza\GiftCard\Model\GiftCardHistoryFactory;
-use Mageplaza\GiftCard\Helper\Data as GiftCardHelper;
+use Mageplaza\GiftCard\Helper\Data as GiftCardHelperData;
+use Mageplaza\GiftCard\Helper\SendEmail as GiftCardHelperEmail;
 use Magento\Framework\Message\ManagerInterface as MessageManager;
 use Magento\Catalog\Api\ProductRepositoryInterface as ProductRepository;
 
 class BuyGiftCard implements ObserverInterface
 {
-    protected GiftCardHelper $giftCardHelper;
     protected MessageManager $messageManager;
     protected GiftCardFactory $giftCardFactory;
     protected ProductRepository $productRepository;
+    protected GiftCardHelperData $giftCardHelperData;
+    protected GiftCardHelperEmail $giftCardHelperEmail;
     protected GiftCardHistoryFactory $giftCardHistoryFactory;
 
     public function __construct(
         MessageManager         $messageManager,
-        GiftCardHelper         $giftCardHelper,
         GiftCardFactory        $giftCardFactory,
         ProductRepository      $productRepository,
+        GiftCardHelperData     $giftCardHelperData,
+        GiftCardHelperEmail    $giftCardHelperEmail,
         GiftCardHistoryFactory $giftCardHistoryFactory
     )
     {
-        $this->giftCardHelper = $giftCardHelper;
         $this->messageManager = $messageManager;
         $this->giftCardFactory = $giftCardFactory;
         $this->productRepository = $productRepository;
+        $this->giftCardHelperData = $giftCardHelperData;
+        $this->giftCardHelperEmail = $giftCardHelperEmail;
         $this->giftCardHistoryFactory = $giftCardHistoryFactory;
     }
 
     public function execute(Observer $observer)
     {
+        // Send email
+        $this->giftCardHelperEmail->sendEmail();
         $order = $observer->getOrder();
         $customerId = $order->getCustomerId();
-        $codeLength = $this->giftCardHelper->getCodeLength();
+        $codeLength = $this->giftCardHelperData->getCodeLength();
 
         foreach ($order->getAllItems() as $item) {
             if ($item->getProductType() === 'virtual') {
@@ -52,7 +58,7 @@ class BuyGiftCard implements ObserverInterface
                         $giftCardCode = $this->giftCardFactory->create();
                         $giftCardHistory = $this->giftCardHistoryFactory->create();
                         // Random gift code
-                        $giftCode = $this->giftCardHelper->generateGiftCode($codeLength);
+                        $giftCode = $this->giftCardHelperData->generateGiftCode($codeLength);
 
                         $giftCardData = [
                             'code' => $giftCode,

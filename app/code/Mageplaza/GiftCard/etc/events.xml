@@ -6,4 +6,7 @@
     <event name="controller_action_predispatch_checkout_cart_couponPost">
         <observer name="ApplyGiftCard" instance="Mageplaza\GiftCard\Observer\ApplyGiftCard"/>
     </event>
+    <event name="sales_order_place_after">
+        <observer name="AfterOrder" instance="Mageplaza\GiftCard\Observer\AfterOrder"/>
+    </event>
 </config>

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Mageplaza\GiftCard\Model\Total\Quote;
 
 use Magento\Quote\Model\Quote;
@@ -32,49 +31,51 @@ class GiftCardDiscount extends AbstractTotal
         $this->_giftCardFactory = $giftCardFactory;
     }
 
+
     public function collect(
         Quote                       $quote,
         ShippingAssignmentInterface $shippingAssignment,
-        Total                       $total
-    ): GiftCardDiscount
+        Total                       $total): GiftCardDiscount
     {
         parent::collect($quote, $shippingAssignment, $total);
+        // Load gift card using the code stored in checkout session
         $giftCard = $this->_giftCardFactory->create()->load($this->_checkoutSession->getCode(), 'code');
-        $baseDiscount = $this->_checkoutSession->getAmount() ?? 0;
-        $_subTotal = $total->getSubtotal();
-
-        if ($baseDiscount > $_subTotal) {
-            // Update amount_used
-//            $giftCard->setAmountUsed($giftCard->getAmountUsed() + $_subTotal);
-            $baseDiscount = $_subTotal;
+        if (!$giftCard->getId()) {
+            return $this;
         }
-        // Chuyển đổi sang tiền tệ của store
+        // Calculate discount amount
+        $baseDiscount = $this->_checkoutSession->getAmount() ?? 0;
+
+        if ($baseDiscount > $total->getSubtotal()) {
+            $baseDiscount = $total->getSubtotal();
+        }
         $discount = $this->_priceCurrency->convert($baseDiscount);
 
-        // Cập nhật lại giá trị cho total
+        // Update total amounts
         $total->addTotalAmount('giftcard_discount', -$discount);
-
-        // Cập nhật lại giá trị cho base total
         $total->addBaseTotalAmount('giftcard_discount', -$baseDiscount);
-
-        // Cập nhật lại giá trị cho quote (tổng tiền của giỏ hàng)
-        $total->setBaseGrandTotal($total->getBaseGrandTotal() - $baseDiscount);
-
-        // Cập nhật lại giá trị cho quote (tổng tiền của giỏ hàng)
-        $quote->setCustomDiscount(-$discount);
-
+//        dd($total->getBaseGrandTotal());
+//        $total->setBaseGrandTotal($total->getBaseGrandTotal() -$baseDiscount);
+        $quote->setGiftCardDiscount(-$discount);
         return $this;
     }
 
-    public function fetch(Quote $quote, Total $total)
+    public function fetch(Quote $quote, Total $total): array
     {
-        $amount = $total->getCustomDiscount();
-        $title = __('Gift Card');
-        return [
-            'code' => 'giftcard_discount',
-            'title' => $title,
-            'value' => $amount
-        ];
+        $totals = [];
+        $amount = $this->_checkoutSession->getAmount() ?? 0;
+        if ($amount > $total->getSubtotal()) {
+            $amount = $total->getSubtotal();
+        }
+        if ($amount > 0) {
+            $totals[] = [
+                'code' => 'giftcard_discount',
+                'title' => __('Gift Card (%1)', $this->_checkoutSession->getCode()),
+                'value' => $amount
+            ];
+        }
+        return $totals;
     }
+
 
 }

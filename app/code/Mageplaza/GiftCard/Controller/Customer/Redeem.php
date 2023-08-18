@@ -52,7 +52,7 @@ class Redeem extends Action
         $data = [
             'giftcard_id' => $giftCard->getId(),
             'customer_id' => $customerSession->getId(),
-            'amount' => $giftCard->getBalance() - $giftCard->getAmountUsed(),
+            'amount' => '-' . ($giftCard->getBalance() - $giftCard->getAmountUsed()),
             'action' => 'Redeem',
         ];
 

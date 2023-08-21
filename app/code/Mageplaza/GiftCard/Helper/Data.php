@@ -3,7 +3,6 @@
 namespace Mageplaza\GiftCard\Helper;
 
 use DateTime;
-use JsonException;
 use Zend_Log_Exception;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\App\Helper\Context;
@@ -68,10 +67,6 @@ class Data extends AbstractHelper
         return $code;
     }
 
-    public function formatDate($date)
-    {
-        return (new DateTime($date))->format('d/n/y');
-    }
 
     public function getMyGiftCardUrl(): string
     {
@@ -83,12 +78,20 @@ class Data extends AbstractHelper
         return $this->_getRequest()->getServer('HTTP_REFERER');
     }
 
+    /**
+     * @throws Zend_Log_Exception|\JsonException
+     */
     public function debug($data): void
     {
         $writer = new \Zend_Log_Writer_Stream(BP . '/var/log/custom.log');
         $logger = new \Zend_Log();
         $logger->addWriter($writer);
         $logger->info(json_encode($data, JSON_THROW_ON_ERROR));
+    }
+
+    public function getGiftCardCode($code): \Mageplaza\GiftCard\Model\GiftCard
+    {
+        return $this->giftCardFactory->create()->load($code, 'code');
     }
 
 }

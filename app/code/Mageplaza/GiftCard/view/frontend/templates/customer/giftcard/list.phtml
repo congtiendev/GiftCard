@@ -1,6 +1,7 @@
 <?php use Magento\Framework\Pricing\Helper\Data;
+use Mageplaza\GiftCard\Block\Customer\MyGiftCard\ListGift;
 
-/** @var \Mageplaza\GiftCard\Block\Customer\MyGiftCard\ListGift $block */
+/** @var ListGift $block */
 $_giftCards = $block->getGiftCardHistory();
 $_isEnable = $block->isEnable();
 $_allowRedeem = $block->allowRedeemGiftCard();

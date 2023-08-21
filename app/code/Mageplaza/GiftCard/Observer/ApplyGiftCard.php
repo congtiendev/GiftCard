@@ -9,6 +9,7 @@ use Mageplaza\GiftCard\Model\GiftCardFactory;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\App\Response\RedirectInterface;
+use Mageplaza\GiftCard\Helper\Data as GiftCardHelperData;
 use Magento\Checkout\Model\Session as CheckoutSession;
 
 class ApplyGiftCard implements ObserverInterface
@@ -19,13 +20,15 @@ class ApplyGiftCard implements ObserverInterface
     protected ManagerInterface $messageManager;
     protected CheckoutSession $checkoutSession;
     protected GiftCardFactory $giftcardFactory;
+    protected GiftCardHelperData $giftCardHelperData;
 
     public function __construct(
-        RedirectInterface $redirect,
-        ActionFlag        $actionFlag,
-        ManagerInterface  $messageManager,
-        CheckoutSession   $checkoutSession,
-        GiftCardFactory   $giftcardFactory
+        RedirectInterface  $redirect,
+        ActionFlag         $actionFlag,
+        ManagerInterface   $messageManager,
+        CheckoutSession    $checkoutSession,
+        GiftCardFactory    $giftcardFactory,
+        GiftCardHelperData $giftCardHelperData
     )
     {
         $this->redirect = $redirect;
@@ -33,10 +36,14 @@ class ApplyGiftCard implements ObserverInterface
         $this->messageManager = $messageManager;
         $this->giftcardFactory = $giftcardFactory;
         $this->checkoutSession = $checkoutSession;
+        $this->giftCardHelperData = $giftCardHelperData;
     }
 
     public function execute(Observer $observer)
     {
+        if (!$this->giftCardHelperData->allowUsedGiftCardAtCheckout()) {
+            return;
+        }
         $controller = $observer->getData('controller_action');
         $couponCode = trim($controller->getRequest()->getParam('coupon_code'));
         $remove = $controller->getRequest()->getParam('remove');
@@ -47,10 +54,10 @@ class ApplyGiftCard implements ObserverInterface
                 $this->applyGiftCard($giftCard, $couponCode);
                 $this->redirect->redirect($controller->getResponse(), 'checkout/cart');
             } else {
-                $this->unSetCode();
+                $this->checkoutSession->unsCode();
             }
         } else if ($remove && $this->checkoutSession->getCode()) {
-            $this->unSetCode();
+            $this->checkoutSession->unsCode();
             $this->messageManager->addSuccessMessage(__('You canceled the gift card. 🎁🎁🎁'));
         }
     }
@@ -59,7 +66,7 @@ class ApplyGiftCard implements ObserverInterface
     {
         $amount = $giftCard->getBalance() - $giftCard->getAmountUsed();
         if ($amount > 0) {
-            $this->setCode($couponCode, $amount);
+            $this->checkoutSession->setCode($couponCode);
             $this->messageManager->addSuccessMessage(__('Gift code applied successfully 💲🤑'));
         } else {
             $this->messageManager->addErrorMessage(__('Gift Card has expired or fully used. 💸💸💸'));
@@ -67,15 +74,4 @@ class ApplyGiftCard implements ObserverInterface
         $this->actionFlag->set('', ActionInterface::FLAG_NO_DISPATCH, true);
     }
 
-    protected function setCode($couponCode, $amount): void
-    {
-        $this->checkoutSession->setCode($couponCode);
-        $this->checkoutSession->setAmount($amount);
-    }
-
-    protected function unSetCode(): void
-    {
-        $this->checkoutSession->unsCode();
-        $this->checkoutSession->unsAmount();
-    }
 }

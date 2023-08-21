@@ -11,7 +11,7 @@ define([
         defaults: {
             template: 'Mageplaza_GiftCard/checkout/summary/giftcarddiscount'
         },
-        isDisplayedGiftCardDiscount: function () {
+        isDisplayed: function () {
             if (totals.getSegment('giftcard_discount')) {
                 return totals.getSegment('giftcard_discount').value > 0;
             }

@@ -74,11 +74,6 @@ class ListGift extends Template
         );
     }
 
-    public function formatPrice($price)
-    {
-        return $this->priceCurrency->format($price, true, 0, null, $this->getCurrentCurrencyCode());
-    }
-
 
     public function _prepareLayout()
     {

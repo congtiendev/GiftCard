@@ -79,6 +79,4 @@ class ListGift extends Template
     {
         return parent::_prepareLayout();
     }
-
-
 }

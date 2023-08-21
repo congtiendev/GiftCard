@@ -51,8 +51,8 @@ class BuyGiftCard implements ObserverInterface
             $productId = $item->getProductId();
             $product = $this->productRepository->getById($productId);
             $giftCardAmount = $product->getCustomAttribute('giftcard_amount');
-            if ($item->getProductType() === 'virtual' && isset($giftCardAmount) && $giftCardAmount->getValue() > 0) {
 
+            if ($item->getProductType() === 'virtual' && isset($giftCardAmount) && $giftCardAmount->getValue() > 0) {
                 for ($i = 0; $i < $item->getQtyOrdered(); $i++) {
                     $giftCardCode = $this->giftCardFactory->create();
                     $giftCardHistory = $this->giftCardHistoryFactory->create();
@@ -100,7 +100,7 @@ class BuyGiftCard implements ObserverInterface
         if (!$giftCard->getId()) {
             return;
         }
-        
+
         $amount = 0;
         $amountUse = $giftCard->getBalance() - $giftCard->getAmountUsed();
         if ($amountUse > $order->getSubtotal()) {

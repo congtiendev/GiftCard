@@ -108,7 +108,7 @@ class BuyGiftCard implements ObserverInterface
             $amount = $order->getSubtotal();
         } else {
             $amountUsed = $giftCard->getBalance();
-            $amount = $order->getSubtotal() - $giftCard->getAmountUsed();
+            $amount = $amountUse;
         }
 
         try {

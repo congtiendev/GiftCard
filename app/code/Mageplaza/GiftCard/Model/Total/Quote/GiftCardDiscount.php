@@ -46,11 +46,11 @@ class GiftCardDiscount extends AbstractTotal
         parent::collect($quote, $shippingAssignment, $total);
         // Load gift card
         $giftCard = $this->_giftCardHelper->getGiftCardCode($this->_checkoutSession->getCode());
-        if (!$giftCard->getId()) {
+        if (!$giftCard->getId() || !$this->_giftCardHelper->isGiftCardEnabled() ||
+            !$this->_giftCardHelper->allowUsedGiftCardAtCheckout()) {
             return $this;
         }
 
-        $address = $shippingAssignment->getShipping()->getAddress();
         // Calculate discount amount
         $baseDiscount = $giftCard->getBalance() - $giftCard->getAmountUsed();
         if ($baseDiscount <= 0) {
@@ -59,15 +59,16 @@ class GiftCardDiscount extends AbstractTotal
         if ($baseDiscount > $total->getSubtotal()) {
             $baseDiscount = $total->getSubtotal();
         }
-        $discount = $this->_priceCurrency->convert($baseDiscount);
 
+        $discount = $this->_priceCurrency->convert($baseDiscount);
         // Update total amounts
         $total->addTotalAmount($giftCard->getCode(), -$discount);
         $total->addBaseTotalAmount($giftCard->getCode(), -$baseDiscount);
-
         $total->setSubtotalWithDiscount($total->getSubtotal() + $discount);
-        $total->setBaseSubtotalWithDiscount($total->getBaseSubtotal() + $baseDiscount);
-
+        $total->setBaseSubtotalWithDiscount($total->getBaseSubtotal() + $discount);
+        
+        $quote->setGiftcardDiscount($discount);
+        $quote->setBaseGiftcardDiscount($baseDiscount);
         return $this;
     }
 
@@ -78,11 +79,7 @@ class GiftCardDiscount extends AbstractTotal
         if (!$giftCard->getId()) {
             return $totals;
         }
-        $amount = $giftCard->getBalance() - $giftCard->getAmountUsed();
-        if ($amount > $total->getSubtotal()) {
-            $amount = $total->getSubtotal();
-        }
-
+        $amount = $quote->getGiftcardDiscount();
         if ($amount > 0) {
             $totals[] = [
                 'code' => $this->getCode(),
@@ -92,5 +89,4 @@ class GiftCardDiscount extends AbstractTotal
         }
         return $totals;
     }
-
 }

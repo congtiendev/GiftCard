@@ -4,8 +4,7 @@
     <body>
         <referenceContainer name="content">
             <block class="Mageplaza\GiftCard\Block\Customer\MyGiftCard\ListGift" name="giftcard_customer_mygiftcart"
-                   template="Mageplaza_GiftCard::customer/giftcard/list.phtml" cacheable="false"/>
+                   template="Mageplaza_GiftCard::customer/giftcard/list.phtml"/>
         </referenceContainer>
     </body>
 </page>
-

@@ -7,7 +7,7 @@ use Mageplaza\GiftCard\Model\ResourceModel\GiftCardHistory as ResourceModelGiftC
 class GiftCardHistory extends \Magento\Framework\Model\AbstractModel implements
     \Magento\Framework\DataObject\IdentityInterface
 {
-    const CACHE_TAG = 'mageplaza_giftcard_giftcard_history';
+    public const CACHE_TAG = 'mageplaza_giftcard_giftcard_history';
 
     protected $_cacheTag = 'mageplaza_giftcard_giftcard_history';
 

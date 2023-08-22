@@ -94,4 +94,14 @@ class Data extends AbstractHelper
         return $this->giftCardFactory->create()->load($code, 'code');
     }
 
+    /**
+     * @throws \Exception
+     */
+    public function formatDateTime($date): string
+    {
+        $date = new DateTime($date);
+        return $date->format('d-m-Y');
+    }
+
+
 }

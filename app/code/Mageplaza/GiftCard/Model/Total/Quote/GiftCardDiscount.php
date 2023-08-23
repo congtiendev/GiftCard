@@ -19,7 +19,6 @@ class GiftCardDiscount extends AbstractTotal
     protected CheckoutSession $_checkoutSession;
     protected GiftCardFactory $_giftCardFactory;
     protected PriceHelper $_priceHelper;
-    protected const GIFT_CARD_DISCOUNT = 'giftcard_discount';
 
     public function __construct(
         PriceCurrencyInterface $priceCurrency,
@@ -29,7 +28,6 @@ class GiftCardDiscount extends AbstractTotal
         PriceHelper            $priceHelper
     )
     {
-        $this->setCode(self::GIFT_CARD_DISCOUNT);
         $this->_priceHelper = $priceHelper;
         $this->_giftCardHelper = $giftCardHelper;
         $this->_priceCurrency = $priceCurrency;
@@ -66,7 +64,7 @@ class GiftCardDiscount extends AbstractTotal
         $total->addBaseTotalAmount($giftCard->getCode(), -$baseDiscount);
         $total->setSubtotalWithDiscount($total->getSubtotal() + $discount);
         $total->setBaseSubtotalWithDiscount($total->getBaseSubtotal() + $discount);
-        
+
         $quote->setGiftcardDiscount($discount);
         $quote->setBaseGiftcardDiscount($baseDiscount);
         return $this;
@@ -75,15 +73,11 @@ class GiftCardDiscount extends AbstractTotal
     public function fetch(Quote $quote, Total $total): array
     {
         $totals = [];
-        $giftCard = $this->_giftCardHelper->getGiftCardCode($this->_checkoutSession->getCode());
-        if (!$giftCard->getId()) {
-            return $totals;
-        }
         $amount = $quote->getGiftcardDiscount();
         if ($amount > 0) {
             $totals[] = [
                 'code' => $this->getCode(),
-                'title' => __('Gift Card (%1)', $giftCard->getCode()),
+                'title' => __('Gift Card (%1)', $this->_checkoutSession->getCode()),
                 'value' => $amount
             ];
         }

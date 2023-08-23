@@ -3,7 +3,7 @@
     <body>
         <referenceBlock name="customer_account_navigation">
             <block class="Magento\Framework\View\Element\Html\Link\Current" name="mageplaza_giftcard_history"
-                   cacheable="false">
+            >
                 <arguments>
                     <argument name="path" xsi:type="string">giftcard/customer/mygiftcard</argument>
                     <argument name="label" xsi:type="string">My Gift Cart</argument>

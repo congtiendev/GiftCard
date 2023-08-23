@@ -14,10 +14,7 @@ $_balance = $block->getBalance();
 50px ">
     <div class="balance">
         <h4>Balance</h4>
-        <span>
-           <?php echo $_balance > 0 ? $this->helper(Data::class)->currency
-           ($_balance) : $this->helper(Data::class)->currency
-           (0); ?>
+        <span id="balance">
         </span>
     </div>
     <?php if ($_isEnable && $_allowRedeem): ?>
@@ -39,35 +36,42 @@ $_balance = $block->getBalance();
     <?php endif; ?>
 </div>
 
-<?php if (count($_giftCards) > 0): ?>
 
-    <div class="table-wrapper downloadable-products">
-        <h2>History</h2>
-        <hr>
-        <table id="my-downloadable-products-table" class="data table table-downloadable-products">
-            <caption class="table-caption">History Gift Card</caption>
-            <thead>
-            <tr>
-                <th scope="col" class="col date">Date</th>
-                <th scope="col" class="col title">Code</th>
-                <th scope="col" class="col title">Amount</th>
-                <th scope="col" class="col actions">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($_giftCards as $giftCard): ?>
-                <tr>
-                    <td class="col date"><?php echo $block->formatDateTime($giftCard->getActionTime()) ?></td>
-                    <td class="col title"><?php echo $giftCard->getCode() ?></td>
-                    <td class="col title"><?= $this->helper(Data::class)->currency
-                        ($giftCard->getAmount()) ?></td>
-                    <td class="col actions"><?php echo $giftCard->getAction() ?></td>
-                </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
-<?php else: ?>
-    <div class="message info empty"><span><?php echo __('You have not gift card !'); ?></span></div>
-<?php endif; ?>
+<div class="table-wrapper downloadable-products">
+    <h2>History</h2>
+    <hr>
+    <table id="my-gift-card-history-table" class="data table table-downloadable-products">
+        <caption class="table-caption">History Gift Card</caption>
+        <thead>
+        <tr>
+            <th scope="col" class="col date">Date</th>
+            <th scope="col" class="col title">Code</th>
+            <th scope="col" class="col title">Amount</th>
+            <th scope="col" class="col actions">Actions</th>
+        </tr>
+        </thead>
+        <tbody id="history">
+        </tbody>
+    </table>
+</div>
+
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "Magento_Ui/js/core/app": {
+                "components": {
+                    "getGiftCardHistory": {
+                        "component": "Mageplaza_GiftCard/js/giftcardhistory",
+                        "url": "<?php echo $block->getUrl('giftcard/customer/getgiftcardhistory') ?>"
+                    },
+                    "getGiftCardBalance": {
+                        "component": "Mageplaza_GiftCard/js/giftcardbalance",
+                        "url": "<?php echo $block->getUrl('giftcard/customer/getgiftcardbalance') ?>"
+                    }
+                }
+            }
+        }
+    }
+</script>
+
 

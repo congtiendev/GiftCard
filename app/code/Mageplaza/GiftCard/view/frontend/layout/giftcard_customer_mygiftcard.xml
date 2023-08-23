@@ -7,4 +7,5 @@
                    template="Mageplaza_GiftCard::customer/giftcard/list.phtml"/>
         </referenceContainer>
     </body>
+
 </page>

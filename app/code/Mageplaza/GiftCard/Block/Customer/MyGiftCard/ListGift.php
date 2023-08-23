@@ -8,6 +8,7 @@ use Magento\Framework\View\Element\Template\Context;
 use Mageplaza\GiftCard\Helper\Data as GiftCardHelper;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
+use Mageplaza\GiftCard\Controller\Customer\GetGiftCardHistory;
 use Mageplaza\GiftCard\Model\ResourceModel\GiftCardHistory\CollectionFactory;
 
 
@@ -16,22 +17,25 @@ class ListGift extends Template
     protected Session $customerSession;
     protected TimezoneInterface $dateTime;
     protected GiftCardHelper $giftCardHelper;
-    protected CollectionFactory $giftcardFactory;
     protected PriceCurrencyInterface $priceCurrency;
+    protected GetGiftCardHistory $getGiftCardHistory;
+    protected CollectionFactory $giftCardHistoryCollectionFactory;
+    protected $_template = 'Mageplaza_GiftCard::customer/mygiftcard/list.phtml';
 
 
     public function __construct(
-        CollectionFactory      $giftcardFactory,
-        GiftCardHelper         $giftCardHelper,
-        PriceCurrencyInterface $priceCurrency,
-        Session                $customerSession,
-        TimezoneInterface      $dateTime,
-        Context                $context,
-        array                  $data = []
+        CollectionFactory  $giftCardHistoryCollectionFactory,
+        GetGiftCardHistory $getGiftCardHistory,
+        Session            $customerSession,
+        GiftCardHelper     $giftCardHelper,
+        TimezoneInterface  $dateTime,
+        Context            $context,
+        array              $data = []
     )
     {
+        $this->giftCardHistoryCollectionFactory = $giftCardHistoryCollectionFactory;
+        $this->getGiftCardHistory = $getGiftCardHistory;
         $this->customerSession = $customerSession;
-        $this->giftcardFactory = $giftcardFactory;
         $this->giftCardHelper = $giftCardHelper;
         parent::__construct($context, $data);
         $this->dateTime = $dateTime;
@@ -41,8 +45,12 @@ class ListGift extends Template
 
     public function getGiftCardHistory(): \Mageplaza\GiftCard\Model\ResourceModel\GiftCardHistory\Collection
     {
+//        $customerId = $this->customerSession->getCustomer()->getId();
+//        $giftCardListHistory = $this->getGiftCardHistory->execute($customerId);
+//        return $giftCardListHistory;
+
         $customerId = $this->customerSession->getCustomer()->getId();
-        $giftCardListHistory = $this->giftcardFactory->create();
+        $giftCardListHistory = $this->giftCardHistoryCollectionFactory->create();
         $giftCardListHistory->getListHistory($customerId);
         return $giftCardListHistory;
     }
@@ -62,20 +70,16 @@ class ListGift extends Template
         return $this->giftCardHelper->allowRedeemGiftCard();
     }
 
-    public function formatDateTime($date)
+    /**
+     * @throws \Exception
+     */
+    public function formatDateTime($date): string
     {
-        return $this->dateTime->formatDateTime(
-            $date,
-            \IntlDateFormatter::MEDIUM, // Định dạng ngày
-            \IntlDateFormatter::MEDIUM, // Định dạng thời gian
-            null,
-            null,
-            'd/M/y' // Định dạng ngày/tháng/năm
-        );
+        return $this->giftCardHelper->formatDateTime($date);
     }
 
 
-    public function _prepareLayout()
+    public function _prepareLayout(): ListGift
     {
         return parent::_prepareLayout();
     }

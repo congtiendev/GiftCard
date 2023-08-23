@@ -24,5 +24,10 @@
                 </argument>
             </arguments>
         </referenceBlock>
+
+        <referenceBlock name="checkout.cart.form.before">
+            <block class="Mageplaza\GiftCard\Block\Coupon" name="giftcard.coupon"
+                   template="Mageplaza_GiftCard::cart/coupon.phtml" after="-"/>
+        </referenceBlock>
     </body>
 </page>

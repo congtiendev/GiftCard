@@ -5,7 +5,7 @@ namespace Mageplaza\GiftCard\Controller\Customer;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Customer\Helper\Session\CurrentCustomer;
+use Magento\Customer\Model\Session as CurrentCustomer;
 use Mageplaza\GiftCard\Model\ResourceModel\GiftCardHistory\CollectionFactory;
 
 class GetGiftCardHistory extends Action
@@ -31,11 +31,12 @@ class GetGiftCardHistory extends Action
     {
         $customerId = $this->_currentCustomer->getCustomerId();
         $giftCardListHistory = $this->_giftCardHistoryCollectionFactory->create();
+        $giftCardBalance = $this->_currentCustomer->getCustomer()->getGiftcardBalance();
         $giftCardListHistory->getListHistory($customerId);
 
         $jsonData = [
             'giftCardHistory' => $giftCardListHistory->getData(),
-            'message' => 'Data retrieved successfully'
+            'giftCardBalance' => $giftCardBalance,
         ];
 
         $resultJson = $this->_jsonFactory->create();

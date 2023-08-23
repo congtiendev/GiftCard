@@ -6,6 +6,7 @@ $_giftCards = $block->getGiftCardHistory();
 $_isEnable = $block->isEnable();
 $_allowRedeem = $block->allowRedeemGiftCard();
 $_balance = $block->getBalance();
+$_currencySymbol = $block->getCurrentCurrencySymbol();
 ?>
 <h2>Gift Card Information</h2>
 <hr>
@@ -62,11 +63,8 @@ $_balance = $block->getBalance();
                 "components": {
                     "getGiftCardHistory": {
                         "component": "Mageplaza_GiftCard/js/giftcardhistory",
-                        "url": "<?php echo $block->getUrl('giftcard/customer/getgiftcardhistory') ?>"
-                    },
-                    "getGiftCardBalance": {
-                        "component": "Mageplaza_GiftCard/js/giftcardbalance",
-                        "url": "<?php echo $block->getUrl('giftcard/customer/getgiftcardbalance') ?>"
+                        "url": "<?php echo $block->getUrl('giftcard/customer/getgiftcardhistory') ?>",
+                        "currencySymbol": "<?php echo $_currencySymbol ?>"
                     }
                 }
             }

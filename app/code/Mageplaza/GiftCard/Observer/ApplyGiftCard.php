@@ -73,5 +73,4 @@ class ApplyGiftCard implements ObserverInterface
         }
         $this->actionFlag->set('', ActionInterface::FLAG_NO_DISPATCH, true);
     }
-
 }

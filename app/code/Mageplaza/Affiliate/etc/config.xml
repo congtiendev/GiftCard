@@ -1,0 +1,13 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <affiliate_configuration>
+            <general>
+                <enable>1</enable>
+                <select_static_block>1</select_static_block>
+                <code_length>6</code_length>
+                <url_key>key</url_key>
+            </general>
+        </affiliate_configuration>
+    </default>
+</config>

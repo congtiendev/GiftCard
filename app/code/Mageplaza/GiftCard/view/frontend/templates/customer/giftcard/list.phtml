@@ -6,19 +6,18 @@ $_giftCards = $block->getGiftCardHistory();
 $_isEnable = $block->isEnable();
 $_allowRedeem = $block->allowRedeemGiftCard();
 $_balance = $block->getBalance();
-$_currencySymbol = $block->getCurrentCurrencySymbol();
 ?>
 <h2>Gift Card Information</h2>
 <hr>
+<?php if ($_isEnable && $_allowRedeem): ?>
 
-<div class="balance__redeem" style="display:flex; justify-content:space-between; align-items:center; padding-bottom:
+    <div class="balance__redeem" style="display:flex; justify-content:space-between; align-items:center; padding-bottom:
 50px ">
-    <div class="balance">
-        <h4>Balance</h4>
-        <span id="balance">
+        <div class="balance">
+            <h4>Balance</h4>
+            <span id="balance">
         </span>
-    </div>
-    <?php if ($_isEnable && $_allowRedeem): ?>
+        </div>
         <div class="redeem">
             <h4>Redeem</h4>
             <form method="POST" action="<?php echo $block->getUrl('giftcard/customer/redeem') ?>"
@@ -34,8 +33,8 @@ $_currencySymbol = $block->getCurrentCurrencySymbol();
                 </button>
             </form>
         </div>
-    <?php endif; ?>
-</div>
+    </div>
+<?php endif; ?>
 
 
 <div class="table-wrapper downloadable-products">
@@ -63,8 +62,7 @@ $_currencySymbol = $block->getCurrentCurrencySymbol();
                 "components": {
                     "getGiftCardHistory": {
                         "component": "Mageplaza_GiftCard/js/giftcardhistory",
-                        "url": "<?php echo $block->getUrl('giftcard/customer/getgiftcardhistory') ?>",
-                        "currencySymbol": "<?php echo $_currencySymbol ?>"
+                        "url": "<?php echo $block->getUrl('giftcard/customer/getgiftcardhistory') ?>"
                     }
                 }
             }

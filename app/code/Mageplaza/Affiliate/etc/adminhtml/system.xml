@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="affiliate_configuration" translate="label" type="text" sortOrder="130" showInDefault="1"
+                 showInWebsite="1"
+                 showInStore="1">
+            <class>separator-top</class>
+            <label>Affiliate</label>
+            <tab>mageplaza</tab>
+            <resource>Mageplaza_Affiliate::config_affiliate</resource>
+
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+                <label>General Settings</label>
+                <field id="enable" translate="label comment" type="select" sortOrder="10" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Enable Affiliate</label>
+                    <comment>Enable or disable the affiliate.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="select_static_block" translate="label comment" type="select" sortOrder="20" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                    <label>Select Register Static Block</label>
+                    <source_model>Magento\Cms\Model\Config\Source\Block</source_model>
+                    <comment>Select a static block to display when a customer hasn't created an account.</comment>
+                </field>
+
+                <field id="code_length" translate="label comment" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Affiliate Code Length</label>
+                    <validate>validate-digits</validate>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                    <comment>Set the length of the affiliate code used in the invitation link. Default: 6</comment>
+                </field>
+
+                <field id="url_key" translate="label comment" type="text" sortOrder="40" showInDefault="1"
+                       showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>URL Key</label>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                    <comment>Variable used in the URL to retrieve the affiliate code value. Default: key</comment>
+                </field>
+            </group>
+
+            <group id="affiliate_rule" translate="label" type="text" sortOrder="11" showInDefault="1"
+                   showInWebsite="1" showInStore="1">
+                <label>Affiliate Rule</label>
+
+                <field id="apply_discount" translate="label" type="select" sortOrder="10" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Apply Discount to Customer</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="discount_value" translate="label" type="text" sortOrder="20" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Discount Value</label>
+                    <depends>
+                        <field id="apply_discount">1</field>
+                    </depends>
+                    <validate>validate-number</validate>
+                </field>
+
+                <field id="commission_type" translate="label" type="select" sortOrder="30" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Commission Type</label>
+                </field>
+
+                <field id="commission_value" translate="label" type="text" sortOrder="40" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                    <label>Commission Value</label>
+                    <validate>validate-number</validate>
+                </field>
+            </group>
+
+        </section>
+    </system>
+</config>

@@ -7,7 +7,7 @@ use Mageplaza\GiftCard\Model\ResourceModel\CustomerEntity as ResourceModelCustom
 class CustomerEntity extends \Magento\Framework\Model\AbstractModel implements
     \Magento\Framework\DataObject\IdentityInterface
 {
-    const CACHE_TAG = 'mageplaza_giftcard_customer_entity';
+    public const CACHE_TAG = 'mageplaza_giftcard_customer_entity';
 
     protected $_cacheTag = 'mageplaza_giftcard_customer_entity';
 

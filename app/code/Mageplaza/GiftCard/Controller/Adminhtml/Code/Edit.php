@@ -11,6 +11,7 @@ class Edit extends Action
 {
 
     protected PageFactory $_resultPageFactory;
+    public const ADMIN_RESOURCE = 'Mageplaza_GiftCard::giftcard_edit';
 
     public function __construct(PageFactory $resultPageFactory, Context $context)
     {

@@ -3,15 +3,16 @@
 namespace Mageplaza\GiftCard\Controller\Adminhtml\Code;
 
 use Exception;
-use Magento\Framework\App\Action\Action;
+use Magento\Backend\App\Action;
 use Magento\Framework\App\Action\Context;
 use Mageplaza\GiftCard\Model\GiftCardFactory;
 use Mageplaza\GiftCard\Helper\Data as GiftCardHelper;
 
 class Save extends Action
 {
-    protected $giftCardFactory;
-    protected $giftCardHelper;
+    protected GiftCardFactory $giftCardFactory;
+    protected GiftCardHelper $giftCardHelper;
+    public const ADMIN_RESOURCE = 'Mageplaza_GiftCard::giftcard_save';
 
     public function __construct(Context $context, GiftCardFactory $giftCardFactory, GiftCardHelper $giftCardHelper)
     {
@@ -23,6 +24,7 @@ class Save extends Action
 
     public function execute()
     {
+
         $data = $this->getRequest()->getPostValue();
         $giftCardId = $data['giftcard_id'] ?? null;
         $giftCard = $this->giftCardFactory->create();

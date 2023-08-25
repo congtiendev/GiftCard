@@ -5,6 +5,7 @@ namespace Mageplaza\GiftCard\Controller\Adminhtml\Code;
 class Index extends \Magento\Backend\App\Action
 {
     protected $resultPageFactory = false;
+    public const ADMIN_RESOURCE = 'Mageplaza_GiftCard::giftcard_index';
 
     public function __construct(
         \Magento\Backend\App\Action\Context        $context,
@@ -23,8 +24,4 @@ class Index extends \Magento\Backend\App\Action
         return $resultPage;
     }
 
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed('Mageplaza_GiftCard::giftcard_new_code');
-    }
 }

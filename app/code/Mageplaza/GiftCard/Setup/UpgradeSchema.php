@@ -12,24 +12,24 @@ class UpgradeSchema implements UpgradeSchemaInterface
     public function upgrade(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
         $installer = $setup;
-
         $installer->startSetup();
-        $connection = $installer->getConnection();
-        $connection->addIndex(
-            $installer->getTable('giftcard_code'),
-            $setup->getIdxName(
-                $installer->getTable('giftcard_code'),
-                ['code'],
-                \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_FULLTEXT
-            ),
-            ['code'],
-            \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_FULLTEXT
-        );
-        $installer->endSetup();
         if (version_compare($context->getVersion(), '1.2.0', '<')) {
             $connection = $installer->getConnection();
+            die(__METHOD__);
 
-            // Tạo bảng giftcard_history
+            // Update index for giftcard_code table
+            $connection->addIndex(
+                $installer->getTable('giftcard_code'),
+                $setup->getIdxName(
+                    $installer->getTable('giftcard_code'),
+                    ['code'],
+                    \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_FULLTEXT
+                ),
+                ['code'],
+                \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_FULLTEXT
+            );
+
+            // Create table 'giftcard_history'
             $table = $installer->getTable('giftcard_history');
             if (!$connection->isTableExists($table)) {
                 $giftcardHistoryTable = $connection->newTable($table)
@@ -92,22 +92,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     ->setComment('Gift Card History Table');
                 $connection->createTable($giftcardHistoryTable);
             }
-
-            // Thêm cột giftcard_balance vào bảng customer_entity
-//            $customerTable = $installer->getTable('customer_entity');
-//            $connection->addColumn(
-//                $customerTable,
-//                'giftcard_balance',
-//                [
-//                    'type' => Table::TYPE_DECIMAL,
-//                    'length' => '12,4',
-//                    'nullable' => false,
-//                    'default' => 0.0000,
-//                    'comment' => 'Gift Card Balance'
-//                ]
-//            );
         }
-
         $installer->endSetup();
     }
 }

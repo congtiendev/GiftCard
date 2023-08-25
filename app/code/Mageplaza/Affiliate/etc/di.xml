@@ -13,6 +13,7 @@
         </arguments>
     </type>
 
+
     <virtualType name="account_collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
         <arguments>
             <argument name="mainTable" xsi:type="string">affiliate_account</argument>
@@ -25,5 +26,6 @@
             <argument name="resourceModel" xsi:type="string">Mageplaza\Affiliate\Model\ResourceModel\History</argument>
         </arguments>
     </virtualType>
-    
+
+
 </config>

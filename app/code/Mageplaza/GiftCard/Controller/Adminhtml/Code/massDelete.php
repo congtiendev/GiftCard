@@ -9,6 +9,7 @@ use Magento\Framework\Controller\ResultFactory;
 class MassDelete extends \Magento\Backend\App\Action
 {
     protected $collectionFactory;
+    public const ADMIN_RESOURCE = 'Mageplaza_GiftCard::giftcard_massdelete';
 
     public function __construct(
         Context           $context,
@@ -21,6 +22,7 @@ class MassDelete extends \Magento\Backend\App\Action
 
     public function execute()
     {
+
         $ids = $this->getRequest()->getParam('selected');
         //dd($ids);
 

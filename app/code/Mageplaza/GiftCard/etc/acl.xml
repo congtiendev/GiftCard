@@ -6,11 +6,22 @@
             <resource id="Magento_Backend::admin">
                 <!--Phân quyền cho menu Mageplaza-->
                 <resource id="Mageplaza_GiftCard::giftcard_manage" title="Mageplaza" sortOrder="50">
+
                     <resource id="Mageplaza_GiftCard::giftcard_title" title="Gift Card" sortOrder="9">
+                        <!--                        Menu                            -->
+                        <resource id="Mageplaza_GiftCard::giftcard" title="Gift Card" sortOrder="9"/>
                         <resource id="Mageplaza_GiftCard::giftcard_code" title="Manage Codes" sortOrder="8"/>
-                        <resource id="Mageplaza_GiftCard::giftcard_config" title="Configuration" sortOrder="9"/>
-                        <!--Thêm các phân quyền cho action CRUD-->
-                        <resource id="Mageplaza_GiftCard::giftcard_code_new" title="New Action"/>
+                        <resource id="Mageplaza_GiftCard::giftcard_config" title="Configuration" sortOrder="7"/>
+                        <resource id="Mageplaza_GiftCard::giftcard_crud" title="TEST CRUD" sortOrder="6"/>
+
+                        <!--                        Action-->
+                        <resource id="Mageplaza_GiftCard::giftcard_new" title="New Action" sortOrder="5"/>
+                        <resource id="Mageplaza_GiftCard::giftcard_index" title="Index Action" sortOrder="4"/>
+                        <resource id="Mageplaza_GiftCard::giftcard_delete" title="Delete Gift Card" sortOrder="3"/>
+                        <resource id="Mageplaza_GiftCard::giftcard_massdelete" title="Mass Delete Gift Card"
+                                  sortOrder="3"/>
+                        <resource id="Mageplaza_GiftCard::giftcard_edit" title="Edit Gift Card" sortOrder="2"/>
+                        <resource id="Mageplaza_GiftCard::giftcard_save" title="Save Gift Card" sortOrder="1"/>
                     </resource>
                 </resource>
 

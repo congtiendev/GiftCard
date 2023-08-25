@@ -12,7 +12,7 @@ use Magento\Backend\Model\View\Result\ForwardFactory;
 class NewAction extends Action
 {
     protected $_resultForwardFactory = false;
-
+    public const ADMIN_RESOURCE = 'Mageplaza_GiftCard::giftcard_new';
     protected $_authorization;
 
     public function __construct(ForwardFactory $resultForwardFactory, Context $context, AuthorizationInterface $_authorization)
@@ -24,18 +24,11 @@ class NewAction extends Action
 
     public function execute()
     {
-        if (!$this->_isAllowed()) {
-            $this->messageManager->addErrorMessage(__('You do not have permission to access this page.'));
-            return $this->resultRedirectFactory->create()->setPath('*/*/');
-        }
         $resultPage = $this->_resultForwardFactory->create();
         $resultPage->forward('edit');
         return $resultPage;
     }
 
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed('Mageplaza_GiftCard::giftcard_new_code');
-    }
+
 }
 

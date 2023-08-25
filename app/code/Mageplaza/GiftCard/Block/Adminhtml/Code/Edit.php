@@ -32,28 +32,39 @@ class Edit extends Container
         $this->_objectId = 'giftcard_id';
         $this->_controller = 'adminhtml_code'; // <=> Mageplaza\GiftCard\Block\Adminhtml\Code\Grid
         $this->_blockGroup = 'Mageplaza_GiftCard';
-
-
         parent::_construct();
 
-        $this->buttonList->update('save', 'label', __('Save Gift Card'));
-        $this->buttonList->add(
-            'saveandcontinue',
-            [
-                'label' => __('Save and Continue Edit'),
-                'class' => 'save',
-                'data_attribute' => [
-                    'mage-init' => [
-                        'button' => [
-                            'event' => 'saveAndContinueEdit',
-                            'target' => '#edit_form'
+        $id = $this->getRequest()->getParam('id');
+        if ($id) {
+            $this->buttonList->add(
+                'save_and_continue',
+                [
+                    'label' => __('Save and Continue Edit'),
+                    'class' => 'save',
+                    'data_attribute' => [
+                        'mage-init' => [
+                            'button' => [
+                                'event' => 'saveAndContinueEdit',
+                                'target' => '#edit_form'
+                            ]
                         ]
                     ]
+                ],
+                -100
+            );
+
+            $deleteUrl = $this->getUrl('mageplaza_giftcard/code/delete', ['id' => $id]);
+            $deleteConfirmMsg = __("Are you sure you want to remove this gift card?");
+            $this->addButton(
+                'delete',
+                [
+                    'label' => __('Delete Gift Card'),
+                    'class' => 'delete',
+                    'onclick' => "deleteConfirm('{$deleteConfirmMsg}', '{$deleteUrl}')",
                 ]
-            ],
-            -100
-        );
-        $this->buttonList->update('delete', 'label', __('Delete'));
+            );
+        }
+        $this->buttonList->update('save', 'label', __('Save Gift Card'));
     }
 
 

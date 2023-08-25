@@ -34,8 +34,8 @@
     <!-- Code coverage filters -->
     <filter>
         <whitelist>
-            <directory suffix="UpgradeSchema">../../../app/code/Magento</directory>
-            <directory suffix="UpgradeSchema">../../../lib/internal/Magento</directory>
+            <directory suffix=".php">../../../app/code/Magento</directory>
+            <directory suffix=".php">../../../lib/internal/Magento</directory>
             <exclude>
                 <directory>../../../app/code/*/*/Test</directory>
                 <directory>../../../lib/internal/*/*/Test</directory>

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="editor"/>
+    <body>
+        <referenceContainer name="content">
+            <block class="Mageplaza\Affiliate\Block\Adminhtml\Account\Edit" name="mageplaza_affiliate_account_edit"/>
+        </referenceContainer>
+        <referenceContainer name="left">
+            <block class="Mageplaza\Affiliate\Block\Adminhtml\Account\Edit\Tabs"
+                   name="mageplaza_affiliate_account_tabs">
+                <block class="Mageplaza\Affiliate\Block\Adminhtml\Account\Edit\Tab\Account"
+                       name="mageplaza_affiliate_account_edit_tab_account"/>
+                <action method="addTab">
+                    <argument name="name" xsi:type="string">account</argument>
+                    <argument name="block" xsi:type="string">mageplaza_affiliate_account_edit_tab_account</argument>
+                </action>
+            </block>
+        </referenceContainer>
+    </body>
+</page>
+

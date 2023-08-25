@@ -33,9 +33,9 @@ class Edit extends Container
         $this->_controller = 'adminhtml_code'; // <=> Mageplaza\GiftCard\Block\Adminhtml\Code\Grid
         $this->_blockGroup = 'Mageplaza_GiftCard';
         parent::_construct();
-
         $id = $this->getRequest()->getParam('id');
         if ($id) {
+            $this->_coreRegistry->register('giftcard_id', $id); // Save id to registry to use in Mageplaza\GiftCard\Block\Adminhtml\Code\Edit\Tab\Code
             $this->buttonList->add(
                 'save_and_continue',
                 [
@@ -70,12 +70,10 @@ class Edit extends Container
 
     public function getHeaderText()
     {
-        $giftcard = $this->_coreRegistry->registry('mageplaza_giftcard');
-        if ($giftcard->getId()) {
-            $giftCardTitle = $this->escapeHtml($giftcard->getTitle());
-            return __("Edit News '%1'", $giftCardTitle);
-        } else {
-            return __('Add News');
+        $id = $this->_coreRegistry->registry('giftcard_id') ?? null;
+        if ($id) {
+            return __('Edit News');
         }
+        return __('Add News');
     }
 }

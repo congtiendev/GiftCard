@@ -8,7 +8,6 @@ use Mageplaza\GiftCard\Model\GiftCardFactory;
 use Mageplaza\GiftCard\Model\GiftCardHistoryFactory;
 use Magento\Checkout\Model\Session as CheckoutSession;
 use Mageplaza\GiftCard\Helper\Data as GiftCardHelperData;
-use Mageplaza\GiftCard\Helper\SendEmail as GiftCardHelperEmail;
 use Magento\Framework\Message\ManagerInterface as MessageManager;
 use Magento\Catalog\Api\ProductRepositoryInterface as ProductRepository;
 
@@ -19,7 +18,6 @@ class BuyGiftCard implements ObserverInterface
     protected CheckoutSession $checkoutSession;
     protected ProductRepository $productRepository;
     protected GiftCardHelperData $giftCardHelperData;
-    protected GiftCardHelperEmail $giftCardHelperEmail;
     protected GiftCardHistoryFactory $giftCardHistoryFactory;
 
     public function __construct(
@@ -28,7 +26,6 @@ class BuyGiftCard implements ObserverInterface
         GiftCardFactory        $giftCardFactory,
         ProductRepository      $productRepository,
         GiftCardHelperData     $giftCardHelperData,
-        GiftCardHelperEmail    $giftCardHelperEmail,
         GiftCardHistoryFactory $giftCardHistoryFactory
     )
     {
@@ -37,7 +34,6 @@ class BuyGiftCard implements ObserverInterface
         $this->checkoutSession = $checkoutSession;
         $this->productRepository = $productRepository;
         $this->giftCardHelperData = $giftCardHelperData;
-        $this->giftCardHelperEmail = $giftCardHelperEmail;
         $this->giftCardHistoryFactory = $giftCardHistoryFactory;
     }
 

@@ -15,19 +15,6 @@ class UpgradeSchema implements UpgradeSchemaInterface
         $installer->startSetup();
         if (version_compare($context->getVersion(), '1.2.0', '<')) {
             $connection = $installer->getConnection();
-            die(__METHOD__);
-
-            // Update index for giftcard_code table
-            $connection->addIndex(
-                $installer->getTable('giftcard_code'),
-                $setup->getIdxName(
-                    $installer->getTable('giftcard_code'),
-                    ['code'],
-                    \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_FULLTEXT
-                ),
-                ['code'],
-                \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_FULLTEXT
-            );
 
             // Create table 'giftcard_history'
             $table = $installer->getTable('giftcard_history');

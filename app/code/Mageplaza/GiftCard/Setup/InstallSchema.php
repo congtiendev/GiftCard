@@ -16,6 +16,7 @@ class InstallSchema implements InstallSchemaInterface
         $tableName = $setup->getTable('giftcard_code');
 
         if (!$setup->getConnection()->isTableExists($tableName)) {
+
             $table = $setup->getConnection()
                 ->newTable($tableName)
                 ->addColumn(
@@ -64,6 +65,9 @@ class InstallSchema implements InstallSchemaInterface
                     null,
                     ['default' => Table::TIMESTAMP_INIT],
                     'Created At'
+                )->addIndex(
+                    $setup->getIdxName('giftcard_code', ['code']),
+                    ['code']
                 )
                 ->setComment('Giftcard Table');
 

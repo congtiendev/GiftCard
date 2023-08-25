@@ -4,7 +4,7 @@ namespace Mageplaza\GiftCard\Controller\Adminhtml\Code;
 
 use Exception;
 use Magento\Backend\App\Action;
-use Magento\Framework\App\Action\Context;
+use Magento\Backend\App\Action\Context;
 use Mageplaza\GiftCard\Model\GiftCardFactory;
 use Mageplaza\GiftCard\Helper\Data as GiftCardHelper;
 

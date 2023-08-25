@@ -31,8 +31,8 @@ class Code extends Generic implements TabInterface
         $form = $this->_formFactory->create();
         $codeLength = $this->giftCardHelper->getCodeLength();
         $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Gift card information')]);
-
-        $id = $this->getRequest()->getParam('id');
+        
+        $id = $this->_coreRegistry->registry('giftcard_id'); // From Mageplaza\GiftCard\Block\Adminhtml\Code\Edit
         if ($id) {
             $giftCard = $this->_giftCardFactory->create()->load($id);
             $fieldset->addField('giftcard_id', 'hidden', [

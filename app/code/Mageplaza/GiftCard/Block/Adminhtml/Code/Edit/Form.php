@@ -12,7 +12,7 @@ class Form extends Generic
     /**
      * @throws LocalizedException
      */
-    protected function _prepareForm()
+    protected function _prepareForm(): Form
     {
         $form = $this->_formFactory->create(
             [

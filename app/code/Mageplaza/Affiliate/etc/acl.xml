@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Mageplaza_Affiliate::affiliate" title="Affiliate Account" sortOrder="10">
+                    <!--       Menu Acl         -->
+                    <resource id="Mageplaza_Affiliate::affiliate_account" title="Manage Account" sortOrder="10"/>
+                    <resource id="Mageplaza_Affiliate::affiliate_history" title="History" sortOrder="11"/>
+                    <resource id="Mageplaza_Affiliate::affiliate_config" title="Configuration" sortOrder="12"/>
+                    <!--       Controller Acl         -->
+                    <resource id="Mageplaza_Affiliate::account_index" title="Account Index" sortOrder="13"/>
+                    <resource id="Mageplaza_Affiliate::account_new" title="New Account" sortOrder="14"/>
+                    <resource id="Mageplaza_Affiliate::account_edit" title="Account Edit" sortOrder="14"/>
+                    <resource id="Mageplaza_Affiliate::account_save" title="Account Save" sortOrder="15"/>
+                    <resource id="Mageplaza_Affiliate::account_delete" title="Account Delete" sortOrder="16"/>
+                    <resource id="Mageplaza_Affiliate::account_massDelete" title="Account MassDelete" sortOrder="17"/>
+                </resource>
+
+                <resource id="Magento_Backend::stores" title="Stores">
+                    <resource id="Magento_Backend::stores_settings" title="Settings">
+                        <resource id="Magento_Config::config" title="Configuration">
+                            <resource id="Mageplaza_Affliate::affiliate_configuration" title="Affiliate Configuration"
+                                      sortOrder="9"/>
+                        </resource>
+                    </resource>
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>

@@ -36,7 +36,7 @@ class Account extends Generic implements TabInterface
     protected function _prepareForm(): Account
     {
         $form = $this->_formFactory->create();
-        $id = $this->getRequest()->getParam('id');
+        $id = $this->_coreRegistry->registry('account_id');
         $account = $this->_accountFactory->create()->load($id);
         $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Affiliate Account information')]);
 
@@ -45,6 +45,11 @@ class Account extends Generic implements TabInterface
             $fieldset->addField('account_id', 'hidden', [
                 'name' => 'account_id',
                 'value' => $account->getId()
+            ]);
+
+            $fieldset->addField('code', 'hidden', [
+                'name' => 'code',
+                'value' => $account->getCode()
             ]);
 
             $fieldset->addField('customer_id', 'label', [
@@ -69,7 +74,7 @@ class Account extends Generic implements TabInterface
                 'name' => 'affiliate_code',
                 'label' => __('Affiliate Code'),
                 'title' => __('Affiliate Code'),
-                'class' => 'disabled',
+                'disabled' => true,
                 'id' => 'affiliate_code',
                 'value' => $account->getCode()
             ]);
@@ -92,7 +97,7 @@ class Account extends Generic implements TabInterface
                 'label' => __('Balance'),
                 'title' => __('Balance'),
                 'required' => true,
-                'class' => 'validate-number validate-not-negative-number',
+                'class' => 'validate-number validate-not-negative-number validate-greater-than-zero',
                 'placeholder' => __('Enter the balance of the gift card.'),
                 'value' => $account->getBalance(),
                 'id' => 'balance',
@@ -114,6 +119,7 @@ class Account extends Generic implements TabInterface
                 'label' => __('Customer ID'),
                 'title' => __('Customer ID'),
                 'required' => true,
+                'class' => 'validate-number validate-not-negative-number validate-greater-than-zero',
                 'placeholder' => __('Enter the number of characters in the code.'),
                 'id' => 'customer_id'
             ]);
@@ -136,7 +142,7 @@ class Account extends Generic implements TabInterface
                 'label' => __('Initial Balance'),
                 'title' => __('Initial Balance'),
                 'required' => true,
-                'class' => 'validate-number validate-not-negative-number',
+                'class' => 'validate-number validate-not-negative-number validate-greater-than-zero',
                 'placeholder' => __('Enter the initial balance.'),
                 'id' => 'initial_balance'
             ]);

@@ -1,0 +1,66 @@
+<?php
+/** @var History $block */
+
+use Mageplaza\Affiliate\Block\Customer\Affiliate\History;
+
+if (!$block->isEnable()) {
+    $block->redirect();
+}
+?>
+
+<div id="affiliate-dashboard" style="display: none">
+    <div class="block block-dashboard-affiliate-history">
+        <div class="block-title"><strong><?= $block->escapeHtml(__('Affiliate Information')) ?></strong></div>
+        <div class="block-content">
+            <div class="box box-information">
+                <strong class="box-title">
+                    <span><?= $block->escapeHtml(__('Balance')) ?></span>
+                </strong>
+                <div class="box-content" id="affiliate-balance">
+                </div>
+            </div>
+            <div class="box box-information">
+                <strong class="box-title">
+                    <span><?= $block->escapeHtml(__('Refer Link:')) ?></span>
+                </strong>
+                <div class="box-content" id="refer-link">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="affiliate-history" class="block block-dashboard-info">
+        <div class="block-title"><strong><?= $block->escapeHtml(__('Affiliate History')) ?></strong></div>
+        <div class="table-wrapper orders-history">
+            <table class="data table table-order-items history" id="my-affiliate-table">
+                <thead>
+                <tr>
+                    <th scope="col" class="col "><?= $block->escapeHtml(__('Order ID')) ?></th>
+                    <th scope="col" class="col "><?= $block->escapeHtml(__('Order Increment ID')) ?></th>
+                    <th scope="col" class="col "><?= $block->escapeHtml(__('Title')) ?></th>
+                    <th scope="col" class="col "><?= $block->escapeHtml(__('Amount')) ?></th>
+                    <th scope="col" class="col "><?= $block->escapeHtml(__('Status')) ?></th>
+                    <th scope="col" class="col "><?= $block->escapeHtml(__('Date')) ?></th>
+                </tr>
+                </thead>
+                <tbody id="affiliate-history-tbody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!--Form register account -->
+<div id="create-affiliate-account" style="display: none">
+    <div id="static-block"></div>
+
+    <form action="<?= $block->getUrl('affiliate/account/register') ?>" method="post"
+          id="form-create-account"
+          class="form-create-account">
+        <button style="background-color: #0fa7ff" type="submit" class="button">
+            <span><?= $block->escapeHtml(__('Register 📝')) ?></span>
+        </button>
+    </form>
+</div>
+
+

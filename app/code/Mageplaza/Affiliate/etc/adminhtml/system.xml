@@ -5,10 +5,9 @@
         <section id="affiliate_configuration" translate="label" type="text" sortOrder="130" showInDefault="1"
                  showInWebsite="1"
                  showInStore="1">
-            <class>separator-top</class>
             <label>Affiliate</label>
             <tab>mageplaza</tab>
-            <resource>Mageplaza_Affiliate::config_affiliate</resource>
+            <resource>Mageplaza_Affiliate::affiliate_configuration</resource>
 
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
                    showInStore="1">
@@ -57,21 +56,26 @@
                 <field id="apply_discount" translate="label" type="select" sortOrder="10" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>Apply Discount to Customer</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <source_model>Mageplaza\Affiliate\Model\Config\Source\ApplyDiscount</source_model>
+                    <comment>(No, Fixed Value, Percentage of order total)</comment>
                 </field>
+
 
                 <field id="discount_value" translate="label" type="text" sortOrder="20" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>Discount Value</label>
+                    <validate>validate-number validate-greater-than-zero</validate>
                     <depends>
-                        <field id="apply_discount">1</field>
+                        <field id="apply_discount" separator=",">fixed,percentage</field>
                     </depends>
-                    <validate>validate-number</validate>
                 </field>
+
 
                 <field id="commission_type" translate="label" type="select" sortOrder="30" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>Commission Type</label>
+                    <source_model>Mageplaza\Affiliate\Model\Config\Source\CommissionType</source_model>
+                    <comment>(Fixed Value, Percentage of order total)</comment>
                 </field>
 
                 <field id="commission_value" translate="label" type="text" sortOrder="40" showInDefault="1"
@@ -80,7 +84,7 @@
                         <field id="enable">1</field>
                     </depends>
                     <label>Commission Value</label>
-                    <validate>validate-number</validate>
+                    <validate>validate-number validate-greater-than-zero</validate>
                 </field>
             </group>
 

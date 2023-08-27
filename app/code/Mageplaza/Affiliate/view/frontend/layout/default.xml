@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <script src="Mageplaza_Affiliate::js/affiliate.js"/>
+    </head>
+    <body>
+        <referenceBlock name="footer_links">
+            <block class="Magento\Framework\View\Element\Html\Link\Current" name="affiliate_history_footer_link">
+                <arguments>
+                    <argument name="label" xsi:type="string">My Affiliate</argument>
+                    <argument name="path" xsi:type="string">affiliate/history/index/</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+    </body>
+</page>

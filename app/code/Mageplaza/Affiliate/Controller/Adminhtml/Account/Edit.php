@@ -9,6 +9,7 @@ use Magento\Backend\App\Action;
 class Edit extends Action
 {
     protected PageFactory $_resultPageFactory;
+    public const ADMIN_RESOURCE = 'Mageplaza_Affiliate::account_edit';
 
     public function __construct(
         Context     $context,

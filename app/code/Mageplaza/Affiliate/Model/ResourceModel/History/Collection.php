@@ -16,4 +16,5 @@ class Collection extends AbstractCollection
     {
         $this->_init(ModelHistory::class, ResourceModelHistory::class);
     }
+
 }

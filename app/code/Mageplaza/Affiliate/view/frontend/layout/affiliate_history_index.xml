@@ -1,0 +1,10 @@
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="customer_account"/>
+    <body>
+        <referenceContainer name="content">
+            <block class="Mageplaza\Affiliate\Block\Customer\Affiliate\History" name="affiliate_customer_history"
+                   template="Mageplaza_Affiliate::customer/affiliate/history.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

@@ -10,7 +10,7 @@ use Magento\Ui\Component\Listing\Columns\Column;
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class AccountAction extends Column
+class Action extends Column
 {
     /** Url path */
     public const ROW_EDIT_URL = 'affiliate/account/new';

@@ -9,6 +9,7 @@ use Magento\Backend\App\Action;
 class newAction extends Action
 {
     protected $_resultForwardFactory = false;
+    public const ADMIN_RESOURCE = 'Mageplaza_Affiliate::account_new';
 
     public function __construct(
         Context        $context,

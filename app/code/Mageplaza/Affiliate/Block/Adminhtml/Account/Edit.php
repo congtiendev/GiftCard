@@ -2,16 +2,13 @@
 
 namespace Mageplaza\Affiliate\Block\Adminhtml\Account;
 
-
 use Magento\Backend\Block\Widget\Form\Container;
 use Magento\Backend\Block\Widget\Context;
 use Magento\Framework\Registry;
 
 class Edit extends Container
 {
-
     protected ?Registry $_coreRegistry = null;
-
 
     public function __construct(
         Context  $context,
@@ -33,13 +30,25 @@ class Edit extends Container
         $this->_objectId = 'account_id';
         $this->_controller = 'adminhtml_account'; // <=> Mageplaza\Affiliate\Block\Adminhtml\Account\Grid
         $this->_blockGroup = 'Mageplaza_Affiliate';
-
-
         parent::_construct();
 
-        $this->buttonList->update('save', 'label', __('Save Account'));
+        parent::_construct();
+        $id = $this->getRequest()->getParam('id');
+        if ($id) {
+            $this->_coreRegistry->register('account_id', $id);
+            $deleteUrl = $this->getUrl('affiliate/account/delete', ['id' => $id]);
+            $deleteConfirmMsg = __("Are you sure you want to remove this account?");
+            $this->addButton(
+                'delete',
+                [
+                    'label' => __('Delete'),
+                    'class' => 'delete',
+                    'onclick' => "deleteConfirm('{$deleteConfirmMsg}', '{$deleteUrl}')",
+                ]
+            );
+        }
         $this->buttonList->add(
-            'saveandcontinue',
+            'save_and_continue',
             [
                 'label' => __('Save and Continue Edit'),
                 'class' => 'save',
@@ -54,18 +63,15 @@ class Edit extends Container
             ],
             -100
         );
-        $this->buttonList->update('delete', 'label', __('Delete'));
     }
 
 
     public function getHeaderText()
     {
-        $account = $this->_coreRegistry->registry('mageplaza_affiliate_account');
+        $account = $this->_coreRegistry->registry('account_id');
         if ($account->getId()) {
-            $accountTitle = $this->escapeHtml($account->getTitle());
-            return __("Edit News '%1'", $accountTitle);
-        } else {
-            return __('Add News');
+            return __("Edit News '%1'", $this->escapeHtml($account->getName()));
         }
+        return __('Add News');
     }
 }

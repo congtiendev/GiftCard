@@ -5,6 +5,7 @@ namespace Mageplaza\Affiliate\Controller\Adminhtml\Account;
 class Index extends \Magento\Backend\App\Action
 {
     protected $resultPageFactory = false;
+    public const ADMIN_RESOURCE = 'Mageplaza_Affiliate::account_index';
 
     public function __construct(
         \Magento\Backend\App\Action\Context        $context,
@@ -19,7 +20,6 @@ class Index extends \Magento\Backend\App\Action
     {
         $resultPage = $this->resultPageFactory->create();
         $resultPage->getConfig()->getTitle()->prepend((__('Affiliate Account')));
-
         return $resultPage;
     }
 

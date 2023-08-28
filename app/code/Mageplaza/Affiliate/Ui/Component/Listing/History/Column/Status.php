@@ -13,7 +13,7 @@ class Status extends Column
             foreach ($dataSource['data']['items'] as &$item) {
                 $name = $this->getData('name'); // Lấy tên cột hiện tại
                 if (isset($item['history_id'])) {
-                    $item[$name] = $item['status'] === 1 ? 'Active' : 'Inactive';
+                    $item[$name] = $item['status'] ? 'Active' : 'Inactive';
                 }
             }
         }

@@ -6,16 +6,24 @@ use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\App\Helper\Context;
 use Mageplaza\Affiliate\Model\AccountFactory;
 use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Pricing\Helper\Data as PriceHelper;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
+use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Message\ManagerInterface as MessageManager;
 use Magento\Framework\Stdlib\DateTime\DateTimeFormatterInterface as DateTimeFormatter;
 
 
 class Data extends AbstractHelper
 {
+    public const FIXED_AMOUNT = 'fixed';
+    protected $resultRedirect;
+
     protected $scopeConfig;
     protected PriceHelper $priceHelper;
+    protected MessageManager $messageManager;
+    protected CustomerSession $customerSession;
     protected DateTimeFormatter $dateTimeFormatter;
     protected TimezoneInterface $timezone;
 
@@ -26,15 +34,21 @@ class Data extends AbstractHelper
         ScopeConfigInterface $scopeConfig,
         AccountFactory       $accountFactory,
         PriceHelper          $priceHelper,
+        CustomerSession      $customerSession,
         DateTimeFormatter    $dateTimeFormatter,
-        TimezoneInterface    $timezone)
+        MessageManager       $messageManager,
+        TimezoneInterface    $timezone,
+        ResultFactory        $resultFactory)
     {
         parent::__construct($context);
         $this->scopeConfig = $scopeConfig;
         $this->priceHelper = $priceHelper;
         $this->accountFactory = $accountFactory;
+        $this->customerSession = $customerSession;
+        $this->messageManager = $messageManager;
         $this->timezone = $timezone;
         $this->dateTimeFormatter = $dateTimeFormatter;
+        $this->resultRedirect = $resultFactory->create(ResultFactory::TYPE_REDIRECT);
     }
 
     public function isAffiliateEnabled(): bool
@@ -53,9 +67,9 @@ class Data extends AbstractHelper
         );
     }
 
-    public function getCodeLength(): int
+    public function getCodeLength(): float
     {
-        return (int)$this->scopeConfig->getValue(
+        return (float)$this->scopeConfig->getValue(
             'affiliate_configuration/general/code_length',
             ScopeInterface::SCOPE_STORE
         );
@@ -71,16 +85,16 @@ class Data extends AbstractHelper
 
     public function getApplyDiscount(): string
     {
-        return (int)$this->scopeConfig->getValue(
-            'affiliate_configuration/general/apply_discount',
+        return $this->scopeConfig->getValue(
+            'affiliate_configuration/affiliate_rule/apply_discount',
             ScopeInterface::SCOPE_STORE
         );
     }
 
-    public function getDiscountValue(): string
+    public function getDiscountValue()
     {
-        return (int)$this->scopeConfig->getValue(
-            'affiliate_configuration/general/discount_value',
+        return $this->scopeConfig->getValue(
+            'affiliate_configuration/affiliate_rule/discount_value',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -88,7 +102,7 @@ class Data extends AbstractHelper
     public function getCommissionType(): string
     {
         return $this->scopeConfig->getValue(
-            'affiliate_configuration/general/commission_type',
+            'affiliate_configuration/affiliate_rule/commission_type',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -100,10 +114,10 @@ class Data extends AbstractHelper
         return $baseUrl . $urlKey . '/' . $code;
     }
 
-    public function getCommissionValue(): string
+    public function getCommissionValue(): float
     {
-        return (int)$this->scopeConfig->getValue(
-            'affiliate_configuration/general/commission_value',
+        return (float)$this->scopeConfig->getValue(
+            'affiliate_configuration/affiliate_rule/commission_value',
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -125,6 +139,7 @@ class Data extends AbstractHelper
         return $this->priceHelper->currency($price, true, false);
     }
 
+
     public function formatDateTime($date): string
     {
         return $this->dateTimeFormatter->formatObject(
@@ -135,4 +150,16 @@ class Data extends AbstractHelper
             null
         );
     }
+
+    public function isLogin(): bool
+    {
+        return $this->customerSession->isLoggedIn();
+    }
+
+
+    public function cancelReferLink(): void
+    {
+        setcookie($this->getUrlKey(), '', time() - 3600, '/');
+    }
+
 }

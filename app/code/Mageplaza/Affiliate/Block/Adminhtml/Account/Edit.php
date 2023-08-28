@@ -33,10 +33,9 @@ class Edit extends Container
         parent::_construct();
 
         parent::_construct();
-        $id = $this->getRequest()->getParam('id');
-        if ($id) {
-            $this->_coreRegistry->register('account_id', $id);
-            $deleteUrl = $this->getUrl('affiliate/account/delete', ['id' => $id]);
+        $account = $this->_coreRegistry->registry('affiliate_account');
+        if ($account->getId()) {
+            $deleteUrl = $this->getUrl('affiliate/account/delete', ['id' => $account->getId()]);
             $deleteConfirmMsg = __("Are you sure you want to remove this account?");
             $this->addButton(
                 'delete',
@@ -54,23 +53,20 @@ class Edit extends Container
                 'class' => 'save',
                 'data_attribute' => [
                     'mage-init' => [
-                        'button' => [
-                            'event' => 'saveAndContinueEdit',
-                            'target' => '#edit_form'
-                        ]
-                    ]
+                        'button' => ['event' => 'saveAndContinueEdit', 'target' => '#edit_form'],
+                    ],
                 ]
             ],
-            -100
+            10
         );
     }
 
 
     public function getHeaderText()
     {
-        $account = $this->_coreRegistry->registry('account_id');
+        $account = $this->_coreRegistry->registry('affiliate_account');
         if ($account->getId()) {
-            return __("Edit News '%1'", $this->escapeHtml($account->getName()));
+            return __("Edit News '%1'", $this->escapeHtml($account->getId()));
         }
         return __('Add News');
     }

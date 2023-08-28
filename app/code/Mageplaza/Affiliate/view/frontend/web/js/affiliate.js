@@ -62,7 +62,7 @@ require(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
             window.getSelection().removeAllRanges();
             alert({
                 title: 'Success',
-                content: 'Link has been copied to clipboard: ' + '<span style="color: blue;">' + $this.text() + '</span>',
+                content: 'Link has been copied to clipboard: ' + '<a href=' + $this.text() + ' style="color: blue;">' + $this.text() + '</a>',
             });
         });
 

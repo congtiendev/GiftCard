@@ -7,9 +7,12 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Customer\Helper\Session\CurrentCustomer;
 use Mageplaza\Affiliate\Helper\Data as HelperData;
+use Magento\Framework\Controller\ResultFactory;
+
 
 class Index extends Action
 {
+    protected $resultRedirect;
     protected HelperData $helperData;
     protected PageFactory $resultPageFactory;
     protected CurrentCustomer $currentCustomer;
@@ -18,26 +21,28 @@ class Index extends Action
         Context         $context,
         HelperData      $helperData,
         PageFactory     $resultPageFactory,
-        CurrentCustomer $currentCustomer
+        CurrentCustomer $currentCustomer,
+        ResultFactory   $resultFactory
     )
     {
         $this->currentCustomer = $currentCustomer;
         $this->helperData = $helperData;
         $this->resultPageFactory = $resultPageFactory;
+        $this->resultRedirect = $resultFactory->create(ResultFactory::TYPE_REDIRECT);
         parent::__construct($context);
     }
 
 
     public function execute()
     {
-        if (!$this->currentCustomer->getCustomerId()) {
+        if (!$this->helperData->isLogin()) {
             $this->messageManager->addErrorMessage(__('You must login to view this page !'));
-            return $this->_redirect('customer/account/login');
+            return $this->resultRedirect->setPath('customer/account/login');
         }
 
         if (!$this->helperData->isAffiliateEnabled()) {
             $this->messageManager->addErrorMessage(__('Affiliate is disabled !'));
-            return $this->_redirect('customer/account/index/');
+            return $this->resultRedirect->setPath('customer/account/index/');
         }
 
         $resultPage = $this->resultPageFactory->create();

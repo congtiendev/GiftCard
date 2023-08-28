@@ -36,28 +36,27 @@ class Account extends Generic implements TabInterface
     protected function _prepareForm(): Account
     {
         $form = $this->_formFactory->create();
-        $id = $this->_coreRegistry->registry('account_id');
-        $account = $this->_accountFactory->create()->load($id);
+        $account = $this->_coreRegistry->registry('affiliate_account');
         $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Affiliate Account information')]);
 
         if ($account->getId()) {
+            // Edit
             $customer = $this->_customerFactory->create()->load($account->getCustomerId());
             $fieldset->addField('account_id', 'hidden', [
                 'name' => 'account_id',
                 'value' => $account->getId()
             ]);
-
-            $fieldset->addField('code', 'hidden', [
-                'name' => 'code',
-                'value' => $account->getCode()
+            $fieldset->addField('customer_id', 'hidden', [
+                'name' => 'customer_id',
+                'value' => $account->getCustomerId()
             ]);
 
-            $fieldset->addField('customer_id', 'label', [
-                'name' => 'customer_id',
+            $fieldset->addField('customer_id_label', 'label', [
+                'name' => 'customer_id_label',
                 'label' => __('Customer ID'),
                 'title' => __('Customer ID'),
                 'class' => 'disabled',
-                'id' => 'customer_id',
+                'id' => 'customer_id_label',
                 'value' => $account->getCustomerId()
             ]);
 
@@ -70,12 +69,12 @@ class Account extends Generic implements TabInterface
                 'value' => $customer->getFirstname() . ' ' . $customer->getLastname() . ' (' . $customer->getEmail() . ')'
             ]);
 
-            $fieldset->addField('affiliate_code', 'label', [
-                'name' => 'affiliate_code',
+            $fieldset->addField('code', 'label', [
+                'name' => 'code',
                 'label' => __('Affiliate Code'),
                 'title' => __('Affiliate Code'),
                 'disabled' => true,
-                'id' => 'affiliate_code',
+                'id' => 'code',
                 'value' => $account->getCode()
             ]);
 
@@ -112,8 +111,8 @@ class Account extends Generic implements TabInterface
                 'id' => 'created_at'
             ]);
 
-
         } else {
+            // Create
             $fieldset->addField('customer_id', 'text', [
                 'name' => 'customer_id',
                 'label' => __('Customer ID'),

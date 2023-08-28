@@ -3,6 +3,7 @@
 namespace Mageplaza\Affiliate\Controller\Adminhtml\Account;
 
 use Mageplaza\Affiliate\Helper\Data as HelperData;
+use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Message\ManagerInterface;
 use Mageplaza\Affiliate\Model\AccountFactory;
 use Mageplaza\Affiliate\Model\HistoryFactory;
@@ -13,18 +14,20 @@ use Exception;
 
 class Save extends Action
 {
+    public const ADMIN_RESOURCE = 'Mageplaza_Affiliate::account_save';
     protected $messageManager;
+    protected $resultRedirect;
     protected HelperData $helperData;
     protected AccountFactory $accountFactory;
     protected CustomerFactory $customerFactory;
     protected HistoryFactory $historyFactory;
-    public const ADMIN_RESOURCE = 'Mageplaza_Affiliate::account_save';
 
     public function __construct(
         Context          $context,
         AccountFactory   $accountFactory,
         CustomerFactory  $customerFactory,
         HistoryFactory   $historyFactory,
+        ResultFactory    $resultFactory,
         HelperData       $helperData,
         ManagerInterface $messageManager
     )
@@ -35,62 +38,70 @@ class Save extends Action
         $this->customerFactory = $customerFactory;
         $this->historyFactory = $historyFactory;
         $this->messageManager = $messageManager;
+        $this->resultRedirect = $resultFactory->create(ResultFactory::TYPE_REDIRECT);
     }
 
     public function execute()
     {
         $this->messageManager->getMessages(true);
-        if (!$this->getRequest()->isPost()) {
-            return $this->_redirect('*/*/');
-        }
+        $accountId = $this->getRequest()->getParam('account_id');
+        $customerId = $this->getRequest()->getParam('customer_id');
+        $balance = $this->getRequest()->getParam('balance');
+        $status = $this->getRequest()->getParam('status');
 
-        $data = $this->getRequest()->getPostValue();
-        $accountId = $data['account_id'] ?? null;
-        $customerId = $data['customer_id'] ?? null;
-        $account = $this->accountFactory->create();
-        if (!$accountId && !$account->load($accountId)->getId()) {
-            $data['code'] = $this->helperData->generateCode();
-        }
-        $currentBalance = $account->load($accountId)->getBalance() ?? 0;
+        $account = $this->accountFactory->create()->load($accountId);
+        $customer = $this->customerFactory->create()->load($customerId);
+        $currentBalance = 0;
+        if ($accountId && $account->getId()) {
+            // Edit
+            $currentBalance = $account->getBalance();
+            $data = [
+                'account_id' => $account->getId(),
+                'status' => $status,
+                'balance' => $balance,
+            ];
+        } else {
+            // Create
+            if (!$customer->getId() || $account->isExitsCustomer($customerId)) {
+                $this->messageManager->addErrorMessage(__((!$customer->getId() ? 'Customer does not exist.' : 'Customer already has an affiliate account.')));
+                return $this->resultRedirect->setPath('*/*/new');
+            }
 
-        if ($customerId) {
-            $customer = $this->customerFactory->create()->load($customerId);
-            if (!$customer->getId()) {
-                $this->messageManager->addErrorMessage(__('Customer does not exist.'));
-                return $this->_redirect('*/*/new');
-            }
-            if ($account->load($customerId, 'customer_id')->getId()) {
-                $this->messageManager->addWarningMessage(__('Customer already has an affiliate account.'));
-                return $this->_redirect('*/*/new');
-            }
+            $data = [
+                'customer_id' => $customerId,
+                'status' => $this->getRequest()->getParam('status'),
+                'balance' => $this->getRequest()->getParam('balance'),
+                'code' => $this->helperData->generateCode()
+            ];
         }
 
         try {
-            $account->addData($data)->save();
-            if ((!$accountId && $data['balance'] > 0) || ($accountId && $data['balance'] !== $currentBalance)) {
-                $this->updateHistory($account, $data);
+            $account->setData($data)->save();
+            if ((!$accountId && $balance > 0) || ($accountId && $balance !== $currentBalance)) {
+                $this->updateHistory($customerId, $balance, $status);
             }
-
             $this->messageManager->addSuccessMessage(__('Affiliate Account has been saved.'));
-            $this->messageManager->getMessages(true);
-            return $this->_redirect('*/*/index');
+            if ($this->getRequest()->getParam('back')) {
+                return $this->resultRedirect->setPath('*/*/edit', ['id' => $account->getId(), '_current' => true]);
+            }
+            return $this->resultRedirect->setPath('*/*/index');
         } catch (Exception $e) {
             $this->messageManager->addErrorMessage(__('Affiliate Account could not be saved.'));
-            return $this->_redirect('*/*/new');
+            return $this->resultRedirect->setPath('*/*/new');
         }
     }
 
-    public function updateHistory($account, $data): void
+    public function updateHistory($customerId, $balance, $status): void
     {
         try {
             $history = $this->historyFactory->create();
             $history->addData([
                 'order_id' => NULL,
                 'order_increment_id' => NULL,
-                'customer_id' => $account->getCustomerId(),
-                'amount' => $data['balance'],
+                'customer_id' => $customerId,
+                'amount' => $balance,
                 'is_admin_change' => 1,
-                'status' => $data['status']
+                'status' => $status
             ])->save();
         } catch (Exception $e) {
             $this->messageManager->addErrorMessage(__('Affiliate history could not be saved.'));

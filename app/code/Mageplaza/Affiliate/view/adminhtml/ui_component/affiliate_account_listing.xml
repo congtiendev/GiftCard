@@ -45,51 +45,42 @@
         <bookmark name="bookmarks"/>
         <columnsControls name="columns_controls"/>
         <exportButton name="export_button"/>
-        <filterSearch name="code"/>
         <filters name="listing_filters"/>
         <massaction name="listing_massaction" component="Magento_Ui/js/grid/tree-massactions">
-            <action name="delete">
+            <action name="massdelete">
                 <settings>
                     <confirm>
                         <message translate="true">Are you sure you want to delete the selected account?</message>
                         <title translate="true">Delete items</title>
                     </confirm>
-                    <url path="affiliate/account/delete"/>
+                    <url path="affiliate/account/massdelete"/>
                     <type>delete</type>
                     <label translate="true">Delete</label>
                 </settings>
             </action>
 
-            <action name="active">
-                <argument name="data" xsi:type="array">
-                    <item name="config" xsi:type="array">
-                        <item name="type" xsi:type="string">active</item>
-                        <item name="label" xsi:type="string" translate="true">Active</item>
-                        <item name="url" xsi:type="url" path="affiliate/account/active"/>
-                        <item name="confirm" xsi:type="array">
-                            <item name="title" xsi:type="string" translate="true">Active</item>
-                            <item name="message" xsi:type="string" translate="true">Are you sure you wan't to Active
-                                selected items?
-                            </item>
-                        </item>
-                    </item>
-                </argument>
+            <action name="massactive">
+                <settings>
+                    <confirm>
+                        <message translate="true">Are you sure you want to active the selected account?</message>
+                        <title translate="true">Active items</title>
+                    </confirm>
+                    <url path="affiliate/account/massactive"/>
+                    <type>active</type>
+                    <label translate="true">Active</label>
+                </settings>
             </action>
 
-            <action name="inactive">
-                <argument name="data" xsi:type="array">
-                    <item name="config" xsi:type="array">
-                        <item name="type" xsi:type="string">inactive</item>
-                        <item name="label" xsi:type="string" translate="true">InActive</item>
-                        <item name="url" xsi:type="url" path="affiliate/account/inactive"/>
-                        <item name="confirm" xsi:type="array">
-                            <item name="title" xsi:type="string" translate="true">InActive</item>
-                            <item name="message" xsi:type="string" translate="true">Are you sure you wan't to InActive
-                                selected items?
-                            </item>
-                        </item>
-                    </item>
-                </argument>
+            <action name="massinactive">
+                <settings>
+                    <confirm>
+                        <message translate="true">Are you sure you want to in active the selected account?</message>
+                        <title translate="true">Active items</title>
+                    </confirm>
+                    <url path="affiliate/account/massinactive"/>
+                    <type>inactive</type>
+                    <label translate="true">InActive</label>
+                </settings>
             </action>
         </massaction>
         <paging name="listing_paging"/>

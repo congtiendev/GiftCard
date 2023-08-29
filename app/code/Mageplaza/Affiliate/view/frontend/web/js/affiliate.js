@@ -1,8 +1,7 @@
 require(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
     $(document).ready(function () {
 
-        // Render affiliate history with ajax
-        $(document).ready(function () {
+        const renderAffiliateHistory = function () {
             $.ajax({
                 url: 'http://magento2.loc/affiliate/history/gethistory',
                 type: 'GET',
@@ -15,22 +14,27 @@ require(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
                         $('#affiliate-balance').html(response.balance);
                         $('#refer-link').html(response.refer_link);
 
-                        if (response.history.length > 0) {
-                            const historyRows = response.history.map(function (item) {
-                                return '<tr>' +
-                                    '<td>' + item.order_id + '</td>' +
-                                    '<td>' + item.order_increment_id + '</td>' +
-                                    '<td>' + item.title + '</td>' +
-                                    '<td>' + item.amount + '</td>' +
-                                    '<td>' + item.status + '</td>' +
-                                    '<td>' + item.created_at + '</td>' +
-                                    '</tr>';
-                            });
+                        if (response.referenced_by) {
+                            $('#referent-by').show();
+                            $('#referent-by-name').html(response.referenced_by);
+                        }
+
+                        const historyRows = response.history.map(function (item) {
+                            return '<tr>' +
+                                '<td>' + item.order_increment_id + '</td>' +
+                                '<td>' + item.title + '</td>' +
+                                '<td>' + item.amount + '</td>' +
+                                '<td>' + item.status + '</td>' +
+                                '<td>' + item.created_at + '</td>' +
+                                '</tr>';
+                        });
+
+                        if (historyRows.length > 0) {
                             $('#affiliate-history-tbody').append(historyRows.join(''));
                         } else {
-                            $('#affiliate-history-tbody').append(
+                            $('#affiliate-history-tbody').html(
                                 '<tr>' +
-                                '<td colspan="6" style="text-align:center">' +
+                                '<td colspan="5" style="text-align:center">' +
                                 '<div class="message info empty">' +
                                 '<span>You have not affiliate history</span>' +
                                 '</div>' +
@@ -39,8 +43,9 @@ require(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
                             );
                         }
                     } else {
-                        $('#affiliate-dashboard').remove();
+                        $('#affiliate-dashboard, #referent-by').remove();
                         $('#create-affiliate-account').show();
+                        $('#affiliate-history-tbody').html('');
                         $('#static-block').html(response.static_block);
                     }
                 },
@@ -48,10 +53,10 @@ require(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
                     console.log(error);
                 }
             });
-        });
+        };
 
+        renderAffiliateHistory();
 
-        // Copy refer link
         $('#refer-link').on('click', function () {
             const $this = $(this);
             const range = document.createRange();

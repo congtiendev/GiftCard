@@ -20,6 +20,6 @@ class Index extends Action
 
     public function execute()
     {
-        dd($Code = $_COOKIE[$this->helperData->getUrlKey()] ?? null);
+        dd($this->helperData->getAffiliateCode());
     }
 }

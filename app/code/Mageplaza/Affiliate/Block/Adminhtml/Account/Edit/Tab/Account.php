@@ -42,13 +42,21 @@ class Account extends Generic implements TabInterface
         if ($account->getId()) {
             // Edit
             $customer = $this->_customerFactory->create()->load($account->getCustomerId());
+            $formValues = [
+                'account_id' => $account->getId(),
+                'customer_id' => $account->getCustomerId(),
+                'customer_id_label' => $account->getCustomerId(),
+                'customer_name' => $customer->getFirstname() . ' ' . $customer->getLastname() . ' (' . $customer->getEmail() . ')',
+                'code' => $account->getCode(),
+                'status' => $account->getStatus(),
+                'balance' => $account->getBalance(),
+                'created_at' => $account->getCreatedAt(),
+            ];
             $fieldset->addField('account_id', 'hidden', [
                 'name' => 'account_id',
-                'value' => $account->getId()
             ]);
             $fieldset->addField('customer_id', 'hidden', [
                 'name' => 'customer_id',
-                'value' => $account->getCustomerId()
             ]);
 
             $fieldset->addField('customer_id_label', 'label', [
@@ -57,7 +65,6 @@ class Account extends Generic implements TabInterface
                 'title' => __('Customer ID'),
                 'class' => 'disabled',
                 'id' => 'customer_id_label',
-                'value' => $account->getCustomerId()
             ]);
 
             $fieldset->addField('customer_name', 'label', [
@@ -66,7 +73,6 @@ class Account extends Generic implements TabInterface
                 'title' => __('Customer Name'),
                 'class' => 'disabled',
                 'id' => 'customer_name',
-                'value' => $customer->getFirstname() . ' ' . $customer->getLastname() . ' (' . $customer->getEmail() . ')'
             ]);
 
             $fieldset->addField('code', 'label', [
@@ -75,7 +81,6 @@ class Account extends Generic implements TabInterface
                 'title' => __('Affiliate Code'),
                 'disabled' => true,
                 'id' => 'code',
-                'value' => $account->getCode()
             ]);
 
             $fieldset->addField('status', 'select', [
@@ -98,7 +103,6 @@ class Account extends Generic implements TabInterface
                 'required' => true,
                 'class' => 'validate-number validate-not-negative-number validate-greater-than-zero',
                 'placeholder' => __('Enter the balance of the gift card.'),
-                'value' => $account->getBalance(),
                 'id' => 'balance',
             ]);
 
@@ -107,10 +111,9 @@ class Account extends Generic implements TabInterface
                 'label' => __('Created At'),
                 'title' => __('Created At'),
                 'class' => 'disabled',
-                'value' => $account->getCreatedAt(),
                 'id' => 'created_at'
             ]);
-
+            $form->setValues($formValues);
         } else {
             // Create
             $fieldset->addField('customer_id', 'text', [

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="order_totals">
+            <!--<block class="Mageplaza\Affiliate\Block\Adminhtml\Sales\Order\Affiliate" name="order_totals_affiliate" template="Mageplaza_Affiliate::order/view/affiliate.phtml" after="order_totals_tax"/>-->
+            <block class="Mageplaza\Affiliate\Block\Adminhtml\Sales\Order\Totals" name="order_totals_affiliate"/>
+        </referenceBlock>
+    </body>
+</page>

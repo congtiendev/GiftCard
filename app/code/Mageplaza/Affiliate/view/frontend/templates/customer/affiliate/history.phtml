@@ -35,8 +35,7 @@ if (!$block->isEnable()) {
             <table class="data table table-order-items history" id="my-affiliate-table">
                 <thead>
                 <tr>
-                    <th scope="col" class="col "><?= $block->escapeHtml(__('Order ID')) ?></th>
-                    <th scope="col" class="col "><?= $block->escapeHtml(__('Order Increment ID')) ?></th>
+                    <th scope="col" class="col "><?= $block->escapeHtml(__('Order #')) ?></th>
                     <th scope="col" class="col "><?= $block->escapeHtml(__('Title')) ?></th>
                     <th scope="col" class="col "><?= $block->escapeHtml(__('Amount')) ?></th>
                     <th scope="col" class="col "><?= $block->escapeHtml(__('Status')) ?></th>
@@ -48,13 +47,26 @@ if (!$block->isEnable()) {
             </table>
         </div>
     </div>
+    <div class="referent-by" id="referent-by" style="display: none">
+        <div class="block-content">
+            <div class="box box-information" style="display: flex;align-items: center;gap:3px;">
+                <strong class="box-title">
+                    <span><?= $block->escapeHtml(__('You were referred by : ')) ?></span>
+                </strong>
+                <div class="box-content" id="referent-by-name">
+                </div>
+            </div>
+            <a class="cancel-referent" href="<?= $block->cancelRefer() ?>" id="cancel-referent"
+            ><?= $block->escapeHtml(__('Cancel Refer ')) ?></a>
+        </div>
+    </div>
 </div>
 
 <!--Form register account -->
 <div id="create-affiliate-account" style="display: none">
     <div id="static-block"></div>
 
-    <form action="<?= $block->getUrl('affiliate/account/register') ?>" method="post"
+    <form action="<?= $block->getRegisterAction() ?>" method="post"
           id="form-create-account"
           class="form-create-account">
         <button style="background-color: #0fa7ff" type="submit" class="button">

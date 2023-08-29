@@ -41,38 +41,57 @@ class AffiliateDiscount extends AbstractTotal
         Total                       $total
     ): AffiliateDiscount
     {
-        $code = $_COOKIE[$this->_helperData->getUrlKey()] ?? null;
+        $code = $this->_helperData->getAffiliateCode();
         $account = $this->_accountFactory->create()->load($code, 'code');
-        if ($account->getId() && $this->_helperData->isAffiliateEnabled()) {
+        if ($account->getId() && $this->_helperData->isAffiliateEnabled() && $this->_helperData->getApplyDiscount()
+            !== 'No') {
             $applyDiscountType = $this->_helperData->getApplyDiscount();
             $discountValue = $this->_helperData->getDiscountValue();
-            if ($applyDiscountType === 'fixed') {
-                $baseDiscount = $discountValue;
-            } else if ($applyDiscountType === 'percentage') {
-                $baseDiscount = $quote->getSubtotal() * $discountValue / 100;
-            } else {
-                $baseDiscount = 0;
-            }
-            $baseDiscount = $this->_priceHelper->currency(min($baseDiscount, $quote->getSubtotal()), false, false);
-            $total->setDiscountAmount($baseDiscount);
-            $total->setGrandTotal($total->getGrandTotal() - $baseDiscount);
-            $quote->setAffiliateDiscount($baseDiscount);
+            $subtotal = $total->getSubtotal();
+
+            $baseDiscount = $this->_helperData->calculateAffiliate($subtotal, $discountValue, $applyDiscountType);
+            $discount = $this->_priceHelper->currency($baseDiscount, false, false);
+
+            $total->addTotalAmount($this->getCode(), -$discount);
+            $total->addBaseTotalAmount($this->getCode(), -$baseDiscount);
+
+            $total->setSubtotalWithDiscount($total->getSubtotal() + $discount);
+            $total->setBaseSubtotalWithDiscount($total->getBaseSubtotal() + $baseDiscount);
+
+            $total->setAffiliateDiscount($baseDiscount);
+            $total->setBaseAffiliateDiscount($baseDiscount);
+            return $this;
         }
         return $this;
     }
 
+
     public function fetch(Quote $quote, Total $total): array
     {
         $totals = [];
-        $amount = $quote->getAffiliateDiscount();
+        $amount = $total->getAffiliateDiscount();
         if ($amount > 0) {
             $totals[] = [
                 'code' => $this->getCode(),
                 'title' => __('Affiliate Discount'),
-                'value' => $amount
+                'value' => $this->_priceHelper->currency($amount, false, false)
             ];
         }
         return $totals;
     }
 
+//    public function calculateDiscount($subtotal, $discountValue, $applyDiscountType)
+//    {
+//        if ($applyDiscountType === 'fixed') {
+//            $baseDiscount = $discountValue;
+//        } else if ($applyDiscountType === 'percentage') {
+//            $baseDiscount = $subtotal * $discountValue / 100;
+//        } else {
+//            $baseDiscount = 0;
+//        }
+//        return min($baseDiscount, $subtotal);
+//    }
 }
+
+
+

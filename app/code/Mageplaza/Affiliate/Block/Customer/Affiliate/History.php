@@ -88,6 +88,11 @@ class History extends Template
         return $this->affiliateHelper->priceFormat($this->getAccount()->getBalance());
     }
 
+    public function getRegisterAction(): string
+    {
+        return $this->getUrl('affiliate/account/register');
+    }
+
 
     public function getReferLink(): string
     {
@@ -97,5 +102,10 @@ class History extends Template
         return $baseUrl . $urlKey . '/' . $code;
     }
 
+
+    public function cancelRefer(): string
+    {
+        return $this->getUrl('affiliate/refer/cancel');
+    }
 
 }

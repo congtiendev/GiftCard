@@ -4,10 +4,8 @@ namespace Mageplaza\Affiliate\Controller\Refer;
 
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
-use Magento\Customer\Model\CustomerFactory;
 use Mageplaza\Affiliate\Model\AccountFactory;
 use Mageplaza\Affiliate\Helper\Data as HelperData;
-use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\Controller\ResultFactory;
 
 
@@ -15,24 +13,18 @@ class Index extends Action
 {
     protected HelperData $helperData;
     protected AccountFactory $accountFactory;
-    protected CustomerFactory $customerFactory;
-    protected CustomerSession $customerSession;
     protected $resultRedirect;
 
     public function __construct(
-        Context         $context,
-        HelperData      $helperData,
-        AccountFactory  $accountFactory,
-        CustomerFactory $customerFactory,
-        CustomerSession $customerSession,
-        ResultFactory   $resultFactory
+        Context        $context,
+        HelperData     $helperData,
+        AccountFactory $accountFactory,
+        ResultFactory  $resultFactory
     )
     {
         parent::__construct($context);
         $this->helperData = $helperData;
         $this->accountFactory = $accountFactory;
-        $this->customerFactory = $customerFactory;
-        $this->customerSession = $customerSession;
         $this->resultRedirect = $resultFactory->create(ResultFactory::TYPE_REDIRECT);
     }
 
@@ -55,16 +47,15 @@ class Index extends Action
         }
 
         $account = $this->accountFactory->create()->load($code, 'code');
-        $referencedBy = $this->customerFactory->create()->load($account->getCustomerId());
-        $referenceByName = $referencedBy->getFirstname() . ' ' . $referencedBy->getLastname();
+        $referenceByName = $account->getAccountName($account->getId());
 
-        // Kiểm tra xem cookie có tồn tại code hay không
-        if (isset($_COOKIE[$this->helperData->getUrlKey()])) {
+        if ($this->helperData->getAffiliateCode()) {
             $this->messageManager->addNoticeMessage(__('You have already been referred by %1', $referenceByName));
-            return $this->resultRedirect->setPath('customer/account/index/');
+            return $this->resultRedirect->setPath('affiliate/history/index');
         }
-        setcookie($this->helperData->getUrlKey(), $code, time() + (86400 * 365), "/");
+
+        $this->helperData->setAffiliateCode($code);
         $this->messageManager->addSuccessMessage(__('You are referred by %1', $referenceByName));
-        return $this->resultRedirect->setPath($this->_redirect->getRefererUrl());
+        return $this->resultRedirect->setPath('affiliate/history/index');
     }
 }

@@ -17,4 +17,8 @@ class Collection extends AbstractCollection
         $this->_init(ModelHistory::class, ResourceModelHistory::class);
     }
 
+    public function getHistoryByCustomer($customerId): Collection
+    {
+        return $this->addFieldToFilter('customer_id', $customerId)->addFieldToFilter('is_admin_change', 0)->setOrder('created_at', 'desc');;
+    }
 }

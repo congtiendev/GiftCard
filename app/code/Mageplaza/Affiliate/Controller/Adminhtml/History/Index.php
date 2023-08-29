@@ -2,7 +2,7 @@
 
 namespace Mageplaza\Affiliate\Controller\Adminhtml\History;
 
-class Index extends \Magento\Backend\App\Action
+class                               Index extends \Magento\Backend\App\Action
 {
     protected $resultPageFactory = false;
 

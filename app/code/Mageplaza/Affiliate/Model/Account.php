@@ -34,4 +34,15 @@ class Account extends AbstractModel implements IdentityInterface
     {
         return $this->getResource()->isExitsCustomer($customerId);
     }
+
+    public function getAccountByCode($code)
+    {
+        return $this->getResource()->getAccountByCode($code);
+    }
+
+    public function getAccountName($accountId)
+    {
+        return $this->getResource()->getAccountName($accountId);
+    }
+
 }

@@ -55,24 +55,29 @@ class GetHistory extends Action
             return $this->resultRedirect->setPath('customer/account/index/');
         }
         $customerId = $this->currentCustomer->getCustomerId();
-        $account = $this->accountFactory->create()->load($customerId, 'customer_id');
-        $history = $this->historyCollectionFactory->create()->addFieldToFilter('customer_id', $customerId);
+        $account = $this->accountFactory->create();
+        $history = $this->historyCollectionFactory->create()->getHistoryByCustomer($customerId);
         $staticBlockId = $this->helperData->getRegisterStaticBlock();
         $staticBlock = $this->blockFactory->create()->load($staticBlockId)->getContent();
 
         $historyData = [];
         foreach ($history->getData() as $item) {
             $historyData[] = [
-                'order_id' => $item['order_id'],
                 'order_increment_id' => $item['order_increment_id'],
                 'title' => $item['is_admin_change'] ? 'Changed by admin' : 'Created from order #' . $item['order_id'],
                 'amount' => $this->helperData->priceFormat($item['amount']),
-                'status' => $item['status'] ? 'Active' : 'Inactive',
+                'status' => $item['status'],
                 'created_at' => $this->helperData->formatDateTime($item['created_at'])
             ];
         }
-
+        $referencedBy = '';
+        if ($this->helperData->getAffiliateCode()) {
+            $account->load($this->helperData->getAffiliateCode(), 'code');
+            $referencedBy = $account->getAccountName($account->getId());
+        }
+        $account->load($customerId, 'customer_id');
         return $this->resultJsonFactory->create()->setData([
+            'referenced_by' => $referencedBy,
             'account' => $account->getId(),
             'static_block' => $staticBlock,
             'balance' => $this->helperData->priceFormat($account->getBalance()),

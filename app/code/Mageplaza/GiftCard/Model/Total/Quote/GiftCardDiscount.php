@@ -62,6 +62,7 @@ class GiftCardDiscount extends AbstractTotal
         // Update total amounts
         $total->addTotalAmount($giftCard->getCode(), -$discount);
         $total->addBaseTotalAmount($giftCard->getCode(), -$baseDiscount);
+        
         $total->setSubtotalWithDiscount($total->getSubtotal() + $discount);
         $total->setBaseSubtotalWithDiscount($total->getBaseSubtotal() + $discount);
 

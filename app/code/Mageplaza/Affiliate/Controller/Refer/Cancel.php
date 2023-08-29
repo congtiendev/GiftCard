@@ -29,12 +29,12 @@ class Cancel extends Action
             $this->messageManager->addErrorMessage(__('You must login to view this page !'));
             return $this->resultRedirect->setPath('customer/account/login');
         }
-        if (isset($_COOKIE[$this->helperData->getUrlKey()])) {
-            $this->helperData->cancelReferLink();
-            $this->messageManager->addSuccessMessage(__('You have canceled the referral link'));
-        } else {
-            $this->messageManager->addErrorMessage(__('You have not created a referral link'));
+        if ($this->helperData->getAffiliateCode()) {
+            $this->helperData->deleteAffiliateCode();
+            $this->messageManager->addSuccessMessage(__('You have canceled the affiliate account !'));
+            return $this->resultRedirect->setPath('affiliate/history/index');
         }
-        return $this->resultRedirect->setPath('affiliate/history/index');
+        $this->messageManager->addErrorMessage(__('You have not been referred by any users yet !'));
+        return $this->resultRedirect->setPath('customer/account/index/');
     }
 }

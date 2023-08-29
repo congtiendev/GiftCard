@@ -1,0 +1,13 @@
+<!-- ko if: isDisplayed() -->
+<tr class="totals excl">
+    <th class="mark" colspan="1" scope="row" data-bind="text: getTitle()"></th>
+    <td class="amount">
+        <span style="color: red; " class="price"
+              data-bind="html: '&minus;'  + getDiscount(), attr: {'data-th': affiliate_discount}">
+        </span>
+    </td>
+</tr>
+<!-- /ko -->
+
+
+```

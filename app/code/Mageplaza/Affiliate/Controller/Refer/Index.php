@@ -31,7 +31,6 @@ class Index extends Action
     public function execute()
     {
         if (!$this->helperData->isLogin()) {
-            $this->messageManager->addErrorMessage(__('You must login to view this page !'));
             return $this->resultRedirect->setPath('customer/account/login');
         }
 

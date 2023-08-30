@@ -5,4 +5,8 @@
         <observer name="OrderWithAffiliate" instance="Mageplaza\Affiliate\Observer\OrderWithAffiliate"/>
     </event>
 
+    <event name="controller_action_predispatch_checkout_cart_couponPost">
+        <observer name="ApplyAffiliate" instance="Mageplaza\Affiliate\Observer\ApplyAffiliate"/>
+    </event>
+
 </config>

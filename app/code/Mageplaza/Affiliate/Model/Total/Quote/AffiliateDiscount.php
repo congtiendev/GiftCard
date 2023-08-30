@@ -41,14 +41,14 @@ class AffiliateDiscount extends AbstractTotal
         Total                       $total
     ): AffiliateDiscount
     {
-        $code = $this->_helperData->getAffiliateCode();
+        $code = $this->_helperData->getAffiliateCode() ?? $this->_checkoutSession->getAffiliateCode() ?? null;
         $account = $this->_accountFactory->create()->load($code, 'code');
         if ($account->getId() && $this->_helperData->isAffiliateEnabled() && $this->_helperData->getApplyDiscount()
             !== 'No') {
+
             $applyDiscountType = $this->_helperData->getApplyDiscount();
             $discountValue = $this->_helperData->getDiscountValue();
             $subtotal = $total->getSubtotal();
-
             $baseDiscount = $this->_helperData->calculateAffiliate($subtotal, $discountValue, $applyDiscountType);
             $discount = $this->_priceHelper->currency($baseDiscount, false, false);
 
@@ -79,18 +79,6 @@ class AffiliateDiscount extends AbstractTotal
         }
         return $totals;
     }
-
-//    public function calculateDiscount($subtotal, $discountValue, $applyDiscountType)
-//    {
-//        if ($applyDiscountType === 'fixed') {
-//            $baseDiscount = $discountValue;
-//        } else if ($applyDiscountType === 'percentage') {
-//            $baseDiscount = $subtotal * $discountValue / 100;
-//        } else {
-//            $baseDiscount = 0;
-//        }
-//        return min($baseDiscount, $subtotal);
-//    }
 }
 
 

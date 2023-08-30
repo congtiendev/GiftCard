@@ -1,0 +1,5 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Email/etc/email_templates.xsd">
+    <template id="affiliate_email_template" label="Affilite Email Template" file="affiliate_email_template.html"
+              type="html" module="Mageplaza_Affiliate" area="frontend"/>
+</config>

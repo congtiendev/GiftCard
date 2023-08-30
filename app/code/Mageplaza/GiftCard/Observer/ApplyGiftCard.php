@@ -41,8 +41,8 @@ class ApplyGiftCard implements ObserverInterface
 
     public function execute(Observer $observer)
     {
-        if (!$this->giftCardHelperData->allowUsedGiftCardAtCheckout()) {
-            return;
+        if (!$this->giftCardHelperData->allowUsedGiftCardAtCheckout() || !$this->giftCardHelperData->isGiftCardEnabled()) {
+            return $this;
         }
         $controller = $observer->getData('controller_action');
         $couponCode = trim($controller->getRequest()->getParam('coupon_code'));

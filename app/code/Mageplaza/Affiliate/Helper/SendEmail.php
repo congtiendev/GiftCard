@@ -27,17 +27,21 @@ class SendEmail extends AbstractHelper
         parent::__construct($context);
     }
 
-    public function sendEmail(): void
+    public function sendEmail($emailInfo): void
     {
         $templateId = 'affiliate_email_template'; // Template ID
-        $fromEmail = 'tienlcph26838@gmail.com';  // Địa chỉ email của người gửi
-        $fromName = 'Admin';             // Tên người gửi
-        $toEmail = 'congtiendev@gmail.com'; // Địa chỉ email của người nhận
+        $fromEmail = 'admin@mageplaza.vn';  // Địa chỉ email của người gửi
+        $fromName = 'ADMIN';             // Tên người gửi
+        $toEmail = $emailInfo['mail_to']; // Địa chỉ email của người nhận
 
         try {
             $templateVars = [
-                'customer_name' => 'Lê Công Tiến',
-                'balance' => 1000,
+                'subject' => $emailInfo['subject'],
+                'customer_name' => $emailInfo['customer_name'],
+                'order_id' => $emailInfo['order_id'],
+                'commission' => $emailInfo['commission'],
+                'balance' => $emailInfo['balance'],
+                'date' => $emailInfo['date'],
             ];
 
             $storeId = $this->storeManager->getStore()->getId();
@@ -47,11 +51,9 @@ class SendEmail extends AbstractHelper
 
             $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
 
-            // Bổ sung tiêu đề cho email trong templateOptions
             $templateOptions = [
                 'area' => \Magento\Framework\App\Area::AREA_FRONTEND,
                 'store' => $storeId,
-                'subject' => 'Subject of the Email' // Đặt tiêu đề cho email
             ];
 
             $transport = $this->transportBuilder->setTemplateIdentifier($templateId, $storeScope)

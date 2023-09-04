@@ -3,36 +3,33 @@
 namespace Mageplaza\Affiliate\Model\Total\Quote;
 
 use Magento\Quote\Model\Quote;
-use Magento\Sales\Model\OrderFactory;
 use Magento\Quote\Model\Quote\Address\Total;
 use Mageplaza\Affiliate\Model\AccountFactory;
 use Mageplaza\Affiliate\Helper\Data as HelperData;
 use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Quote\Api\Data\ShippingAssignmentInterface;
-use Magento\Framework\Pricing\Helper\Data as PriceHelper;
+use \Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Quote\Model\Quote\Address\Total\AbstractTotal;
 
 class AffiliateDiscount extends AbstractTotal
 {
     protected HelperData $_helperData;
-    protected PriceHelper $_priceHelper;
-    protected OrderFactory $_orderFactory;
     protected AccountFactory $_accountFactory;
     protected CheckoutSession $_checkoutSession;
+    protected PriceCurrencyInterface $_priceCurrency;
+
 
     public function __construct(
-        HelperData      $helperData,
-        PriceHelper     $priceHelper,
-        OrderFactory    $orderFactory,
-        AccountFactory  $accountFactory,
-        CheckoutSession $checkoutSession
+        HelperData             $helperData,
+        AccountFactory         $accountFactory,
+        CheckoutSession        $checkoutSession,
+        PriceCurrencyInterface $priceCurrency
     )
     {
         $this->_helperData = $helperData;
-        $this->_priceHelper = $priceHelper;
-        $this->_orderFactory = $orderFactory;
         $this->_accountFactory = $accountFactory;
         $this->_checkoutSession = $checkoutSession;
+        $this->_priceCurrency = $priceCurrency;
     }
 
     public function collect(
@@ -44,40 +41,34 @@ class AffiliateDiscount extends AbstractTotal
         $code = $this->_helperData->getAffiliateCode() ?? $this->_checkoutSession->getAffiliateCode() ?? null;
         $account = $this->_accountFactory->create()->load($code, 'code');
         if ($account->getId() && $this->_helperData->isAffiliateEnabled() && $this->_helperData->getApplyDiscount()
-            !== 'No') {
-
+            !== 'no') {
             $applyDiscountType = $this->_helperData->getApplyDiscount();
             $discountValue = $this->_helperData->getDiscountValue();
-            $subtotal = $total->getSubtotal();
-            $baseDiscount = $this->_helperData->calculateAffiliate($subtotal, $discountValue, $applyDiscountType);
-            $discount = $this->_priceHelper->currency($baseDiscount, false, false);
-
+            $baseDiscount = $this->_helperData->calculateAffiliate($total->getBaseSubtotal(), $discountValue,
+                $applyDiscountType);
+            if ($baseDiscount <= 0) {
+                return $this;
+            }
+            $discount = $this->_priceCurrency->convert($baseDiscount);
             $total->addTotalAmount($this->getCode(), -$discount);
-            $total->addBaseTotalAmount($this->getCode(), -$baseDiscount);
-
-            $total->setSubtotalWithDiscount($total->getSubtotal() + $discount);
-            $total->setBaseSubtotalWithDiscount($total->getBaseSubtotal() + $baseDiscount);
-
-            $total->setAffiliateDiscount($baseDiscount);
+            $total->setAffiliateDiscount($discount);
             $total->setBaseAffiliateDiscount($baseDiscount);
             return $this;
         }
         return $this;
     }
 
-
     public function fetch(Quote $quote, Total $total): array
     {
-        $totals = [];
-        $amount = $total->getAffiliateDiscount();
-        if ($amount > 0) {
-            $totals[] = [
-                'code' => $this->getCode(),
-                'title' => __('Affiliate Discount'),
-                'value' => $this->_priceHelper->currency($amount, false, false)
-            ];
+        $title = __('Affiliate Discount');
+        if ($this->_checkoutSession->getAffiliateCode()) {
+            $title = __('Affiliate Discount (%1)', $this->_checkoutSession->getAffiliateCode());
         }
-        return $totals;
+        return [
+            'code' => $this->getCode(),
+            'title' => $title,
+            'value' => $total->getAffiliateDiscount()
+        ];
     }
 }
 

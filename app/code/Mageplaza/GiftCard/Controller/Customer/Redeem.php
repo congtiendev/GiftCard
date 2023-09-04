@@ -40,7 +40,7 @@ class Redeem extends Action
 
     public function execute()
     {
-        $code = trim($this->getRequest()->getPostValue('code')) ?? null;
+        $code = trim($this->getRequest()->getParam('code'));
         if (!$code) {
             $this->messageManager->addErrorMessage(__('Please enter your gift card code !'));
             $this->_redirect('giftcard/customer/mygiftcard');
@@ -48,20 +48,19 @@ class Redeem extends Action
         }
         $customerSession = $this->customerSession->getCustomer();
         $giftCard = $this->giftCardFactory->create()->load($code, 'code');
+        $amount = $giftCard->getBalance() - $giftCard->getAmountUsed();
 
         $data = [
             'giftcard_id' => $giftCard->getId(),
             'customer_id' => $customerSession->getId(),
-            'amount' => '-' . ($giftCard->getBalance() - $giftCard->getAmountUsed()),
+            'amount' => '-' . $amount,
             'action' => 'Redeem',
         ];
 
-        $amount = $giftCard->getBalance() - $giftCard->getAmountUsed();
         if (!$giftCard->getId() || $amount <= 0) {
             $this->messageManager->addErrorMessage($giftCard->getId() ? __('Gift Card has expired !') : __('Gift Card does not exist !'));
         } else {
             $currentBalance = $this->customerSession->getCustomer()->getGiftcardBalance();
-
             $this->setBalance($customerSession->getId(), $currentBalance, $amount);
             $this->setAmountUsed($giftCard->getId(), $giftCard->getBalance());
             $this->saveHistory($data);

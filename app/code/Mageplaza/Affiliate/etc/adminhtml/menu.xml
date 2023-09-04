@@ -6,8 +6,8 @@
              sortOrder="10"
              title="Affiliate"
              module="Mageplaza_Affiliate"
-             parent="Mageplaza_GiftCard::giftcard_manage"
-             resource="Mageplaza_Affiliate::affiliate"/>
+             parent="Mageplaza_GiftCard::mageplaza"
+             resource="Mageplaza_Affiliate::affiliate_title"/>
 
         <add id="Mageplaza_Affiliate::affiliate_account"
              sortOrder="10"

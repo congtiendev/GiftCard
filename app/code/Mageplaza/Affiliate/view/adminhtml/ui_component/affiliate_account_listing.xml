@@ -162,7 +162,6 @@
                 <item name="config" xsi:type="array">
                     <item name="resizeEnabled" xsi:type="boolean">false</item>
                     <item name="resizeDefaultWidth" xsi:type="string">107</item>
-                    <item name="indexField" xsi:type="string">job_id</item>
                     <item name="sortOrder" xsi:type="number">180</item>
                 </item>
             </argument>

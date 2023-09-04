@@ -28,7 +28,5 @@ class NewAction extends Action
         $resultPage->forward('edit');
         return $resultPage;
     }
-
-
 }
 

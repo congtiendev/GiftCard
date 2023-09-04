@@ -9,7 +9,7 @@ use Magento\Framework\Registry;
 class Edit extends Container
 {
 
-    protected $_coreRegistry = null;
+    protected ?Registry $_coreRegistry = null;
 
 
     public function __construct(
@@ -33,26 +33,9 @@ class Edit extends Container
         $this->_controller = 'adminhtml_code'; // <=> Mageplaza\GiftCard\Block\Adminhtml\Code\Grid
         $this->_blockGroup = 'Mageplaza_GiftCard';
         parent::_construct();
-        $id = $this->getRequest()->getParam('id');
+        $giftCard = $this->_coreRegistry->registry('giftcard');
+        $id = $giftCard->getId();
         if ($id) {
-            $this->_coreRegistry->register('giftcard_id', $id); // Save id to registry to use in Mageplaza\GiftCard\Block\Adminhtml\Code\Edit\Tab\Code
-            $this->buttonList->add(
-                'save_and_continue',
-                [
-                    'label' => __('Save and Continue Edit'),
-                    'class' => 'save',
-                    'data_attribute' => [
-                        'mage-init' => [
-                            'button' => [
-                                'event' => 'saveAndContinueEdit',
-                                'target' => '#edit_form'
-                            ]
-                        ]
-                    ]
-                ],
-                -100
-            );
-
             $deleteUrl = $this->getUrl('mageplaza_giftcard/code/delete', ['id' => $id]);
             $deleteConfirmMsg = __("Are you sure you want to remove this gift card?");
             $this->addButton(
@@ -64,16 +47,22 @@ class Edit extends Container
                 ]
             );
         }
+        $this->buttonList->add(
+            'save_and_continue',
+            [
+                'label' => __('Save and Continue Edit'),
+                'class' => 'save',
+                'data_attribute' => [
+                    'mage-init' => [
+                        'button' => [
+                            'event' => 'saveAndContinueEdit',
+                            'target' => '#edit_form'
+                        ]
+                    ]
+                ]
+            ],
+            -100
+        );
         $this->buttonList->update('save', 'label', __('Save Gift Card'));
-    }
-
-
-    public function getHeaderText()
-    {
-        $id = $this->_coreRegistry->registry('giftcard_id') ?? null;
-        if ($id) {
-            return __('Edit News');
-        }
-        return __('Add News');
     }
 }

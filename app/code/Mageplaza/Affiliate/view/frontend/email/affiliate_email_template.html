@@ -1,2 +1,24 @@
-<!--@subject Subject Of your email  @-->
-<p>Xin chào {{var customer_name}},</p>
+<!--@subject Notification of Account Balance Changes @-->
+<div style="margin: 0 auto">
+    <img style="width:200px;display:block;margin:0 auto" src="{{view url='Mageplaza_Affiliate::images/logo.png'}}"
+         alt="Logo">
+    <h1 style="text-align: center">Notification of Account Balance Changes</h1>
+    <p>Dear {{var customer_name}},</p>
+
+    <p>We would like to inform you about a recent transaction that took place using your referral link. We appreciate
+        your
+        participation in our affiliate program.</p>
+
+    <ul>
+        <li>Order : <a style="color:blue" href="#">#{{var order_id}}</a></li>
+        <li>Commission : <span style="color:green">+{{var commission}}</span></li>
+        <li>Balance: {{var balance}}</li>
+        <li>Date: {{var date}}</li>
+    </ul>
+
+    <p>Thank you for being a part of our affiliate program!</p>
+
+    <p>Best regards,</p>
+    <p>Mageplaza Service</p>
+</div>
+

@@ -13,7 +13,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
     {
         $setup->startSetup();
 
-        if (version_compare($context->getVersion(), '1.0.2', '<')) {
+        if (version_compare($context->getVersion(), '1.0.4', '<')) {
             // Add 'discount' column to affiliate_history table
             $tableName = $setup->getTable('affiliate_history');
             if ($setup->getConnection()->isTableExists($tableName)) {

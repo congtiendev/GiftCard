@@ -2,13 +2,13 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
-        <add id="Mageplaza_GiftCard::giftcard_manage" title="Mageplaza" module="Mageplaza_GiftCard" sortOrder="50"
-             resource="Mageplaza_GiftCard::giftcard_manage"/>
+        <add id="Mageplaza_GiftCard::mageplaza" title="Mageplaza" module="Mageplaza_GiftCard" sortOrder="50"
+             resource="Mageplaza_GiftCard::mageplaza"/>
 
         <add id="Mageplaza_GiftCard::giftcard_title"
              title="Gift Card"
              module="Mageplaza_GiftCard" sortOrder="9"
-             parent="Mageplaza_GiftCard::giftcard_manage"
+             parent="Mageplaza_GiftCard::mageplaza"
              resource="Mageplaza_GiftCard::giftcard"
         />
 

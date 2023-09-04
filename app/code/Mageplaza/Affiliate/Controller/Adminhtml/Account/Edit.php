@@ -10,10 +10,10 @@ use Magento\Backend\App\Action;
 
 class Edit extends Action
 {
+    public const ADMIN_RESOURCE = 'Mageplaza_Affiliate::account_edit';
     protected PageFactory $_resultPageFactory;
     protected AccountFactory $_accountFactory;
     protected Registry $_coreRegistry;
-    public const ADMIN_RESOURCE = 'Mageplaza_Affiliate::account_edit';
 
     public function __construct(
         Context        $context,

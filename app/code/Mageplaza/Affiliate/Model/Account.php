@@ -45,4 +45,9 @@ class Account extends AbstractModel implements IdentityInterface
         return $this->getResource()->getAccountName($accountId);
     }
 
+    public function getAccountEmail($accountId)
+    {
+        return $this->getResource()->getAccountEmail($accountId);
+    }
+
 }

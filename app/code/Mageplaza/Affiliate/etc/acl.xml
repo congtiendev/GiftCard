@@ -4,18 +4,23 @@
     <acl>
         <resources>
             <resource id="Magento_Backend::admin">
-                <resource id="Mageplaza_Affiliate::affiliate" title="Affiliate Account" sortOrder="10">
+                <resource id="Mageplaza_Affiliate::affiliate" title="Affiliate " sortOrder="8">
                     <!--       Menu Acl         -->
+                    <resource id="Mageplaza_Affiliate::affiliate_title" title="Affiliate Title" sortOrder="9"/>
                     <resource id="Mageplaza_Affiliate::affiliate_account" title="Manage Account" sortOrder="10"/>
                     <resource id="Mageplaza_Affiliate::affiliate_history" title="History" sortOrder="11"/>
-                    <resource id="Mageplaza_Affiliate::affiliate_config" title="Configuration" sortOrder="12"/>
+                    <resource id="Mageplaza_Affiliate::affiliate_configuration" title="Configuration" sortOrder="12"/>
                     <!--       Controller Acl         -->
                     <resource id="Mageplaza_Affiliate::account_index" title="Account Index" sortOrder="13"/>
                     <resource id="Mageplaza_Affiliate::account_new" title="New Account" sortOrder="14"/>
                     <resource id="Mageplaza_Affiliate::account_edit" title="Account Edit" sortOrder="14"/>
                     <resource id="Mageplaza_Affiliate::account_save" title="Account Save" sortOrder="15"/>
                     <resource id="Mageplaza_Affiliate::account_delete" title="Account Delete" sortOrder="16"/>
-                    <resource id="Mageplaza_Affiliate::account_massDelete" title="Account MassDelete" sortOrder="17"/>
+                    <resource id="Mageplaza_Affiliate::account_massdelete" title="Account MassDelete" sortOrder="17"/>
+                    <resource id="Mageplaza_Affiliate::account_massactive" title="MassActive" sortOrder="18"/>
+                    <resource id="Mageplaza_Affiliate::account_massinactive" title="MassInactive" sortOrder="19"/>
+                    <!--History Controller Acl-->
+                    <resource id="Mageplaza_Affiliate::history_index" title="History Index" sortOrder="20"/>
                 </resource>
 
                 <resource id="Magento_Backend::stores" title="Stores">

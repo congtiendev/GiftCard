@@ -6,7 +6,7 @@ class                               Index extends \Magento\Backend\App\Action
 {
     protected $resultPageFactory = false;
 
-//    public const ADMIN_RESOURCE = 'Mageplaza_Affiliate::history_index';
+    public const ADMIN_RESOURCE = 'Mageplaza_Affiliate::history_index';
 
     public function __construct(
         \Magento\Backend\App\Action\Context        $context,

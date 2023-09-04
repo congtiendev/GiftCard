@@ -20,14 +20,10 @@ class ApplyGiftCardPlugin
         $this->checkoutSession = $checkoutSession;
     }
 
-    public function afterGetCouponCode(CouponBlock $subject, $result)
+    public function afterGetCouponCode(CouponBlock $subject, $default)
     {
-        // Get Coupon Code from session
         $code = $this->checkoutSession->getCode();
-        $giftcardCode = $this->giftcardFactory->create()->load($code, 'code')->getCode();
-        if (!$giftcardCode) {
-            return $result; // Return default coupon code
-        }
-        return $giftcardCode;
+        $giftCardCode = $this->giftcardFactory->create()->load($code, 'code')->getCode();
+        return $giftCardCode ?: $default;
     }
 }

@@ -2,20 +2,22 @@
 
 namespace Mageplaza\Affiliate\Helper;
 
-use Magento\Framework\Exception\InputException;
-use Magento\Framework\Stdlib\Cookie\CookieSizeLimitReachedException;
-use Magento\Framework\Stdlib\Cookie\FailureToSendException;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\App\Helper\Context;
 use Mageplaza\Affiliate\Model\AccountFactory;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\Exception\InputException;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\Pricing\Helper\Data as PriceHelper;
 use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
+use Magento\Framework\Stdlib\Cookie\FailureToSendException;
 use Magento\Framework\Message\ManagerInterface as MessageManager;
+use Magento\Framework\Stdlib\Cookie\CookieSizeLimitReachedException;
 use Magento\Framework\Stdlib\CookieManagerInterface as CookieManager;
 use Magento\Framework\Stdlib\DateTime\DateTimeFormatterInterface as DateTimeFormatter;
 
@@ -32,6 +34,8 @@ class Data extends AbstractHelper
     protected MessageManager $messageManager;
     protected AccountFactory $accountFactory;
     protected CustomerSession $customerSession;
+    protected StoreManagerInterface $storeManager;
+    protected PriceCurrencyInterface $priceCurrency;
     protected DateTimeFormatter $dateTimeFormatter;
     protected CookieMetadataFactory $cookieMetadataFactory;
     public const CONFIG_PATH_ENABLE_AFFILIATE = 'affiliate_configuration/general/enable';
@@ -45,21 +49,25 @@ class Data extends AbstractHelper
 
 
     public function __construct(
-        Context               $context,
-        ScopeConfigInterface  $scopeConfig,
-        AccountFactory        $accountFactory,
-        CookieMetadataFactory $cookieMetadataFactory,
-        PriceHelper           $priceHelper,
-        CustomerSession       $customerSession,
-        DateTimeFormatter     $dateTimeFormatter,
-        MessageManager        $messageManager,
-        CookieManager         $cookieManager,
-        TimezoneInterface     $timezone,
-        ResultFactory         $resultFactory)
+        Context                $context,
+        ScopeConfigInterface   $scopeConfig,
+        AccountFactory         $accountFactory,
+        CookieMetadataFactory  $cookieMetadataFactory,
+        PriceHelper            $priceHelper,
+        StoreManagerInterface  $storeManager,
+        PriceCurrencyInterface $priceCurrency,
+        CustomerSession        $customerSession,
+        DateTimeFormatter      $dateTimeFormatter,
+        MessageManager         $messageManager,
+        CookieManager          $cookieManager,
+        TimezoneInterface      $timezone,
+        ResultFactory          $resultFactory)
     {
         parent::__construct($context);
         $this->scopeConfig = $scopeConfig;
         $this->priceHelper = $priceHelper;
+        $this->storeManager = $storeManager;
+        $this->priceCurrency = $priceCurrency;
         $this->accountFactory = $accountFactory;
         $this->cookieMetadataFactory = $cookieMetadataFactory;
         $this->customerSession = $customerSession;
@@ -190,16 +198,27 @@ class Data extends AbstractHelper
         return $this->customerSession->isLoggedIn();
     }
 
-    public function calculateAffiliate($subtotal, $baseValue, $type)
+    public function calculateAffiliate($baseSubtotal, $baseValue, $type)
     {
         if ($type === 'fixed') {
             $value = $baseValue;
         } else if ($type === 'percentage') {
-            $value = $subtotal * $baseValue / 100;
+            $value = $baseSubtotal * $baseValue / 100;
         } else {
             $value = 0;
         }
-        return min($value, $subtotal);
+        return min($value, $baseSubtotal);
+    }
+
+    public function formatCurrencyByCode($amount, $orderCurrencyCode): string
+    {
+        return $this->priceCurrency->convertAndFormat(
+            $amount,
+            false,
+            PriceCurrencyInterface::DEFAULT_PRECISION,
+            $this->storeManager->getStore(),
+            $orderCurrencyCode
+        );
     }
 
 }

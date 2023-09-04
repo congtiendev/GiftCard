@@ -3,11 +3,9 @@
 namespace Mageplaza\Affiliate\Observer;
 
 use Magento\Framework\Event\Observer;
-use Magento\Sales\Model\OrderFactory;
+use Magento\Framework\Event\ObserverInterface;
 use Mageplaza\Affiliate\Model\AccountFactory;
 use Mageplaza\Affiliate\Model\HistoryFactory;
-use Magento\Sales\Api\Data\OrderExtensionFactory;
-use Magento\Framework\Event\ObserverInterface;
 use Mageplaza\Affiliate\Helper\SendEmail as SendEmail;
 use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Framework\Pricing\Helper\Data as PriceHelper;
@@ -16,7 +14,6 @@ use Magento\Framework\Message\ManagerInterface as MessageManager;
 
 class OrderWithAffiliate implements ObserverInterface
 {
-    protected OrderFactory $_orderFactory;
     protected AccountFactory $_accountFactory;
     protected HistoryFactory $_historyFactory;
     protected AffiliateHelperData $_helperData;
@@ -24,21 +21,17 @@ class OrderWithAffiliate implements ObserverInterface
     protected PriceHelper $_priceHelper;
     protected SendEmail $_sendEmail;
     protected MessageManager $_messageManager;
-    protected OrderExtensionFactory $_orderExtensionFactory;
 
     public function __construct(
-        OrderFactory          $orderFactory,
-        AccountFactory        $accountFactory,
-        HistoryFactory        $historyFactory,
-        PriceHelper           $priceHelper,
-        AffiliateHelperData   $helperData,
-        SendEmail             $sendEmail,
-        MessageManager        $messageManager,
-        CheckoutSession       $checkoutSession,
-        OrderExtensionFactory $orderExtensionFactory
+        AccountFactory      $accountFactory,
+        HistoryFactory      $historyFactory,
+        PriceHelper         $priceHelper,
+        AffiliateHelperData $helperData,
+        SendEmail           $sendEmail,
+        MessageManager      $messageManager,
+        CheckoutSession     $checkoutSession
     )
     {
-        $this->_orderFactory = $orderFactory;
         $this->_accountFactory = $accountFactory;
         $this->_historyFactory = $historyFactory;
         $this->_helperData = $helperData;
@@ -46,7 +39,6 @@ class OrderWithAffiliate implements ObserverInterface
         $this->_priceHelper = $priceHelper;
         $this->_messageManager = $messageManager;
         $this->_checkoutSession = $checkoutSession;
-        $this->_orderExtensionFactory = $orderExtensionFactory;
     }
 
     public function execute(Observer $observer)
@@ -63,24 +55,35 @@ class OrderWithAffiliate implements ObserverInterface
                 try {
                     $account->setBalance($account->getBalance() + $commission)->save();
                     $history = $this->_historyFactory->create();
-                    if ($this->_helperData->getApplyDiscount() !== 'No') {
-                        $discount = $this->_helperData->calculateAffiliate($order->getSubtotal(), $this->_helperData->getDiscountValue(), $this->_helperData->getApplyDiscount());
+                    if ($this->_helperData->getApplyDiscount() !== 'no') {
+                        $discount = $this->_helperData->calculateAffiliate($order->getBaseSubtotal(),
+                            $this->_helperData->getDiscountValue(), $this->_helperData->getApplyDiscount());
                     }
                     $history->setData([
                         'order_id' => $order->getId(),
                         'order_increment_id' => $order->getIncrementId(),
-                        'customer_id' => $order->getCustomerId(),
+                        'customer_id' => $account->getCustomerId(),
                         'amount' => $commission,
                         'discount' => $discount ?? 0,
                         'is_admin_change' => '0',
                         'status' => $order->getStatus(),
                     ]);
                     $this->updateHistory($history);
-                    $this->_sendEmail->sendEmail();
                     $this->_helperData->deleteAffiliateCode();
                 } catch (\Exception $e) {
                     $this->_messageManager->addErrorMessage($e->getMessage());
                 }
+                $emailInfo = [
+                    'subject' => 'Notification of Account Balance Changes',
+                    'mail_to' => $account->getAccountEmail($account->getId()),
+                    'customer_name' => $account->getAccountName($account->getId()),
+                    'order_id' => $order->getIncrementId(),
+                    'commission' => $this->_priceHelper->currency($commission, true, false),
+                    'balance' => $this->_priceHelper->currency($account->getBalance(), true, false),
+                    'date' => $order->getCreatedAt(),
+                ];
+                $this->_sendEmail->sendEmail($emailInfo);
+                $this->_checkoutSession->unsAffiliateCode();
             }
         }
     }

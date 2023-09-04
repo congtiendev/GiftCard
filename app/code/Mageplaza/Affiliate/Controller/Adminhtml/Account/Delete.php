@@ -9,8 +9,9 @@ use Magento\Framework\Controller\ResultFactory;
 
 class Delete extends Action
 {
+    public const ADMIN_RESOURCE = 'Mageplaza_Affiliate::account_delete';
     protected $resultRedirect;
-    protected $accountFactory;
+    protected AccountFactory $accountFactory;
 
     public function __construct(
         Context        $context,

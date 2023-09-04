@@ -1,0 +1,6 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Email/etc/email_templates.xsd">
+    <template id="buy_gift_card" label="Buy Gift Card Email Template"
+              file="buy_gift_card.html"
+              type="html" module="Mageplaza_GiftCard" area="frontend"/>
+</config>

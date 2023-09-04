@@ -5,11 +5,11 @@
         <resources>
             <resource id="Magento_Backend::admin">
                 <!--Phân quyền cho menu Mageplaza-->
-                <resource id="Mageplaza_GiftCard::giftcard_manage" title="Mageplaza" sortOrder="50">
+                <resource id="Mageplaza_GiftCard::mageplaza" title="Mageplaza" sortOrder="50">
 
                     <resource id="Mageplaza_GiftCard::giftcard_title" title="Gift Card" sortOrder="9">
                         <!--                        Menu                            -->
-                        <resource id="Mageplaza_GiftCard::giftcard" title="Gift Card" sortOrder="9"/>
+                        <resource id="Mageplaza_GiftCard::giftcard" title="Gift Card Title" sortOrder="9"/>
                         <resource id="Mageplaza_GiftCard::giftcard_code" title="Manage Codes" sortOrder="8"/>
                         <resource id="Mageplaza_GiftCard::giftcard_config" title="Configuration" sortOrder="7"/>
                         <resource id="Mageplaza_GiftCard::giftcard_crud" title="TEST CRUD" sortOrder="6"/>

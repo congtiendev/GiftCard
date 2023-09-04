@@ -2,19 +2,23 @@
 
 namespace Mageplaza\GiftCard\Controller\Adminhtml\CRUD;
 
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 use Mageplaza\GiftCard\Model\GiftCardFactory;
 use Magento\Framework\UrlInterface;
 
 class Index extends Action
 {
-    protected $_giftCardFactory;
-    protected $_pageFactory;
-    protected $urlBuilder;
+    protected GiftCardFactory $_giftCardFactory;
+    protected PageFactory $_pageFactory;
+    protected UrlInterface $urlBuilder;
 
-    public function __construct(Context $context, GiftCardFactory $giftCardFactory, PageFactory $pageFactory, UrlInterface $urlBuilder)
+    public function __construct(
+        Context         $context,
+        GiftCardFactory $giftCardFactory,
+        PageFactory     $pageFactory,
+        UrlInterface    $urlBuilder)
     {
         $this->_giftCardFactory = $giftCardFactory;
         $this->_pageFactory = $pageFactory;
@@ -22,31 +26,27 @@ class Index extends Action
         parent::__construct($context);
     }
 
-    public function getAdminUrl()
+    public function getAdminUrl(): void
     {
         $url = $this->urlBuilder->getUrl('adminhtml/crud/');
     }
 
     public function execute()
     {
-
         $giftCard = $this->_giftCardFactory->create();
         $allGiftCard = $giftCard->getCollection();
-
         $action = $this->getRequest()->getParam('action');
         $id = $this->getRequest()->getParam('id');
-
         if ($action) {
             if ($action === 'delete') {
                 $this->delete($id);
             } elseif ($action === 'edit') {
                 $this->edit($id);
             } else {
-                $this->add();
+                $this->add($giftCard);
             }
             $this->_redirect('*/*/index');
         }
-
 
         echo "<h1 style='text-align: center'>Gift Card</h1>";
         echo "<table border='1' style='margin: 0 auto;'>
@@ -74,19 +74,17 @@ class Index extends Action
                     <td>" . $giftcard->getData('created_from') . "</td>
                     <td>" . $giftcard->getData('created_at') . "</td> 
                     <td>
-                        <a href='" . $this->getAdminUrl() . "?action=edit&id=" . $giftcard->getData('giftcard_id') . "'>Edit</a>
-                        <a href='" . $this->getAdminUrl() . "?action=delete&id=" . $giftcard->getData('giftcard_id') . "'>Delete</a>
+                        <a href='" . $this->getAdminUrl() . "?action=edit&id=" . $giftcard->getId() . "'>Edit</a>
+                        <a href='" . $this->getAdminUrl() . "?action=delete&id=" . $giftcard->getId() . "'>Delete</a>
                     </td>
                     </tr>";
         }
         echo "</tbody></table>";
-
         return $this->_pageFactory->create();
     }
 
-    public function add()
+    public function add($giftCard)
     {
-        $giftCard = $this->_giftCardFactory->create();
         $data = [
             'code' => substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 10),
             'balance' => random_int(100, 1000),

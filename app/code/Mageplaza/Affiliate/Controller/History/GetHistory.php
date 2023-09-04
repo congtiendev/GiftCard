@@ -10,7 +10,6 @@ use Mageplaza\Affiliate\Helper\Data as HelperData;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Customer\Model\Session as CurrentCustomer;
 use Mageplaza\Affiliate\Model\ResourceModel\History\CollectionFactory;
-use Magento\Cms\Model\BlockFactory;
 
 class GetHistory extends Action
 {
@@ -20,7 +19,6 @@ class GetHistory extends Action
     protected AccountFactory $accountFactory;
     protected CurrentCustomer $currentCustomer;
     protected CollectionFactory $historyCollectionFactory;
-    protected BlockFactory $blockFactory;
 
     public function __construct(
         Context           $context,
@@ -29,7 +27,6 @@ class GetHistory extends Action
         CurrentCustomer   $currentCustomer,
         CollectionFactory $historyCollectionFactory,
         AccountFactory    $accountFactory,
-        BlockFactory      $blockFactory,
         ResultFactory     $resultFactory
     )
     {
@@ -38,7 +35,6 @@ class GetHistory extends Action
         $this->currentCustomer = $currentCustomer;
         $this->historyCollectionFactory = $historyCollectionFactory;
         $this->accountFactory = $accountFactory;
-        $this->blockFactory = $blockFactory;
         parent::__construct($context);
         $this->resultRedirect = $resultFactory->create(ResultFactory::TYPE_REDIRECT);
     }
@@ -49,15 +45,8 @@ class GetHistory extends Action
             return $this->resultRedirect->setPath('customer/account/login');
         }
 
-        if (!$this->helperData->isAffiliateEnabled()) {
-            $this->messageManager->addErrorMessage(__('Affiliate is disabled !'));
-            return $this->resultRedirect->setPath('customer/account/index/');
-        }
         $customerId = $this->currentCustomer->getCustomerId();
-        $account = $this->accountFactory->create();
         $history = $this->historyCollectionFactory->create()->getHistoryByCustomer($customerId);
-        $staticBlockId = $this->helperData->getRegisterStaticBlock();
-        $staticBlock = $this->blockFactory->create()->load($staticBlockId)->getContent();
 
         $historyData = [];
         foreach ($history->getData() as $item) {
@@ -70,20 +59,20 @@ class GetHistory extends Action
             ];
         }
         $referencedBy = '';
+        $account = $this->accountFactory->create();
         if ($this->helperData->getAffiliateCode()) {
-            $account->load($this->helperData->getAffiliateCode(), 'code');
-            $referencedBy = $account->getAccountName($account->getId());
+            $referAccount = $account->load($this->helperData->getAffiliateCode(), 'code');
+            $referencedBy = $referAccount->getAccountName($referAccount->getId());
         }
-        $account->load($customerId, 'customer_id');
+        $customerAccount = $account->load($customerId, 'customer_id');
         return $this->resultJsonFactory->create()->setData([
-            'referenced_by' => $referencedBy,
-            'account' => $account->getId(),
-            'static_block' => $staticBlock,
-            'balance' => $this->helperData->priceFormat($account->getBalance()),
-            'refer_link' => $this->helperData->getReferLink($account->getCode()),
+            'referenced_by' => $referencedBy ?? null,
+            'account' => $customerId === $customerAccount->getCustomerId(),
+            'account_status' => $customerAccount->getStatus(),
+            'balance' => $this->helperData->priceFormat($customerAccount->getBalance()),
+            'refer_link' => $this->helperData->getReferLink($customerAccount->getCode()),
+            'refer_code' => $customerAccount->getCode(),
             'history' => $historyData
         ]);
     }
-
-
 }

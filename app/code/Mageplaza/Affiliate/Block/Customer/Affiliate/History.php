@@ -74,7 +74,7 @@ class History extends Template
      */
     public function renderStaticBlock(): string
     {
-        return $this->getLayout()->createBlock(Block::class)->setBlockId($this->getStaticBlock())->toHtml();
+        return $this->getLayout()->createBlock(Block::class)->setBlockId($this->getStaticBlock())->setCacheLifetime(null)->toHtml();
     }
 
     public function getAccount(): \Mageplaza\Affiliate\Model\Account

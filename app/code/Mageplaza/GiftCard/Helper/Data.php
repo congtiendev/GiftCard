@@ -2,24 +2,33 @@
 
 namespace Mageplaza\GiftCard\Helper;
 
-use DateTime;
 use Zend_Log_Exception;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\App\Helper\Context;
 use Mageplaza\GiftCard\Model\GiftCardFactory;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\Pricing\PriceCurrencyInterface;
 
 class Data extends AbstractHelper
 {
     protected $scopeConfig;
-    protected $giftCardFactory;
+    protected $storeManager;
+    protected $priceCurrency;
+    protected GiftCardFactory $giftCardFactory;
 
-    public function __construct(Context $context, ScopeConfigInterface $scopeConfig, GiftCardFactory $giftCardFactory)
+    public function __construct(
+        Context                $context,
+        ScopeConfigInterface   $scopeConfig,
+        StoreManagerInterface  $storeManager,
+        PriceCurrencyInterface $priceCurrency,
+        GiftCardFactory        $giftCardFactory)
     {
         parent::__construct($context);
         $this->scopeConfig = $scopeConfig;
+        $this->storeManager = $storeManager;
+        $this->priceCurrency = $priceCurrency;
         $this->giftCardFactory = $giftCardFactory;
     }
 
@@ -94,14 +103,20 @@ class Data extends AbstractHelper
         return $this->giftCardFactory->create()->load($code, 'code');
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function formatDateTime($date): string
+    public function calculateDiscount($balance, $amountUsed, $subtotal)
     {
-        $date = new DateTime($date);
-        return $date->format('d-m-Y');
+        return min($balance - $amountUsed, $subtotal);
     }
 
 
+    public function formatCurrencyByCode($amount, $orderCurrencyCode): string
+    {
+        return $this->priceCurrency->convertAndFormat(
+            $amount,
+            false,
+            PriceCurrencyInterface::DEFAULT_PRECISION,
+            $this->storeManager->getStore(),
+            $orderCurrencyCode
+        );
+    }
 }

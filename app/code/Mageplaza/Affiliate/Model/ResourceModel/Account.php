@@ -57,4 +57,22 @@ class Account extends AbstractDb
         return '';
     }
 
+
+    public function getAccountEmail($accountId): string
+    {
+        $connection = $this->getConnection();
+        $select = $connection->select()->from(['a' => $this->getMainTable()])
+            ->join(
+                ['c' => $this->getTable('customer_entity')],
+                'a.customer_id = c.entity_id',
+                ['email']
+            )
+            ->where('a.account_id = ?', $accountId);
+
+        $result = $connection->fetchRow($select);
+        if ($result) {
+            return $result['email'];
+        }
+        return '';
+    }
 }

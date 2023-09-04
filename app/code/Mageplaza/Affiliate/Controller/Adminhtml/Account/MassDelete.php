@@ -43,6 +43,6 @@ class MassDelete extends Action
         } catch (\Exception $e) {
             $this->messageManager->addErrorMessage($e->getMessage());
         }
-        return $this->resultRedirect->setPath('*/*/index');
+        return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('*/*/index');
     }
 }

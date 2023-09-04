@@ -16,7 +16,6 @@ class ApplyGiftCard implements ObserverInterface
 {
     protected ActionFlag $actionFlag;
     protected RedirectInterface $redirect;
-
     protected ManagerInterface $messageManager;
     protected CheckoutSession $checkoutSession;
     protected GiftCardFactory $giftcardFactory;

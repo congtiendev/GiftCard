@@ -1,0 +1,24 @@
+<!--@subject Thank You for Your Gift Card Purchase ! @-->
+<div style="margin: 0 auto">
+    <img style="width:200px;display:block;margin:0 auto" src="{{view url='Mageplaza_Affiliate::images/logo.png'}}"
+         alt="Logo">
+    <h1 style="text-align: center">Thank You for Your Gift Card Purchase!</h1>
+    <p>Dear {{var customer_name}},</p>
+    <p>Thank you for purchasing a Gift Card from our store. Below is your Gift Card code:</p>
+
+    <p><strong>Gift Card Code : </strong><span style="color:blue"> {{var gift_card_code}}</span></p>
+    <p><strong>Balance : </strong>{{var balance}}</p>
+
+    <p>Please use this code during checkout to apply the discount. We look forward to serving you in the future.</p>
+    <p>Thank you and have a great day!</p>
+    <p>Best Regards,</p>
+    <p>Mageplaza Service</p>
+    <p style="text-align: center;">
+        <a href="{{store url='checkout/cart'}}"
+           style="padding: 10px 20px; border-radius: 10px; background-color: #007bff; color: #fff;
+           text-decoration: none;">Use
+            Now </a>
+    </p>
+</div>
+
+

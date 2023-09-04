@@ -2,13 +2,15 @@
 
 namespace Mageplaza\GiftCard\Controller\Adminhtml\Code;
 
+use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use Mageplaza\GiftCard\Model\ResourceModel\GiftCard\CollectionFactory;
 use Magento\Framework\Controller\ResultFactory;
+use Mageplaza\GiftCard\Model\ResourceModel\GiftCard\CollectionFactory;
 
-class MassDelete extends \Magento\Backend\App\Action
+
+class MassDelete extends Action
 {
-    protected $collectionFactory;
+    protected CollectionFactory $collectionFactory;
     public const ADMIN_RESOURCE = 'Mageplaza_GiftCard::giftcard_massdelete';
 
     public function __construct(
@@ -22,26 +24,16 @@ class MassDelete extends \Magento\Backend\App\Action
 
     public function execute()
     {
-
-        $ids = $this->getRequest()->getParam('selected');
-        //dd($ids);
-
-        if (!is_array($ids) || empty($ids)) {
-            $this->messageManager->addError(__('Please select items to delete.'));
-        } else {
-            try {
-                $collection = $this->collectionFactory->create();
-                $collection->addFieldToFilter('giftcard_id', ['in' => $ids]);
-                foreach ($collection as $item) {
-                    $item->delete();
-                }
-                $this->messageManager->addSuccess(__('Total of %1 record(s) were deleted.', count($ids)));
-            } catch (\Exception $e) {
-                dd($e->getMessage());
+        $collection = $this->collectionFactory->create();
+        $collectionSize = $collection->getSize();
+        try {
+            foreach ($collection as $giftCard) {
+                $giftCard->delete();
             }
+            $this->messageManager->addSuccessMessage(__('A total of %1 record(s) have been deleted.', $collectionSize));
+        } catch (\Exception $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
         }
-
-        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        return $resultRedirect->setPath('*/*/index');
+        return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('*/*/index');
     }
 }

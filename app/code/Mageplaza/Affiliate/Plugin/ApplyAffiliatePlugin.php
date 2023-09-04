@@ -8,6 +8,7 @@ use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Checkout\Block\Cart\Coupon as CouponBlock;
 use Mageplaza\Affiliate\Helper\Data as AffiliateHelper;
 
+
 class ApplyAffiliatePlugin
 {
     protected AffiliateHelper $helperData;
@@ -29,6 +30,9 @@ class ApplyAffiliatePlugin
 
     public function afterGetCouponCode(CouponBlock $subject, $result)
     {
+        if (!$this->helperData->isAffiliateEnabled() || $this->helperData->getApplyDiscount() === 'no') {
+            return $result;
+        }
         $couponCode = $this->checkoutSession->getAffiliateCode();
         $affiliateCode = $this->accountFactory->create()->load($couponCode, 'code')->getCode();
         if (!$affiliateCode) {

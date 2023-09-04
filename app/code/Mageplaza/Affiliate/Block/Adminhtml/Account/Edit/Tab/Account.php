@@ -101,7 +101,7 @@ class Account extends Generic implements TabInterface
                 'label' => __('Balance'),
                 'title' => __('Balance'),
                 'required' => true,
-                'class' => 'validate-number validate-not-negative-number validate-greater-than-zero',
+                'class' => 'validate-number validate-not-negative-number',
                 'placeholder' => __('Enter the balance of the gift card.'),
                 'id' => 'balance',
             ]);
@@ -121,7 +121,7 @@ class Account extends Generic implements TabInterface
                 'label' => __('Customer ID'),
                 'title' => __('Customer ID'),
                 'required' => true,
-                'class' => 'validate-number validate-not-negative-number validate-greater-than-zero',
+                'class' => 'validate-number validate-not-negative-number',
                 'placeholder' => __('Enter the number of characters in the code.'),
                 'id' => 'customer_id'
             ]);
@@ -144,7 +144,7 @@ class Account extends Generic implements TabInterface
                 'label' => __('Initial Balance'),
                 'title' => __('Initial Balance'),
                 'required' => true,
-                'class' => 'validate-number validate-not-negative-number validate-greater-than-zero',
+                'class' => 'validate-number validate-not-negative-number',
                 'placeholder' => __('Enter the initial balance.'),
                 'id' => 'initial_balance'
             ]);

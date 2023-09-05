@@ -7,13 +7,13 @@ require(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
                 type: 'GET',
                 dataType: 'json',
                 success: function (response) {
-                    console.log(response);
                     if (response.referenced_by === null || response.referenced_by === "") {
                         $('#referent-by').remove();
                     } else {
                         $('#referent-by').show();
                         $('#referent-by-name').html(response.referenced_by);
                     }
+
                     if (response.account) {
                         $('#create-affiliate-account').remove();
                         if (response.account_status == 1) {
@@ -21,19 +21,8 @@ require(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
                             $('#affiliate-balance').html(response.balance);
                             $('#refer-link').data('link', response.refer_link);
                             $('#refer-code').data('code', response.refer_code);
-
-                            const historyRows = response.history.map(function (item) {
-                                return '<tr>' +
-                                    '<td>' + item.order_increment_id + '</td>' +
-                                    '<td>' + item.title + '</td>' +
-                                    '<td>' + item.amount + '</td>' +
-                                    '<td>' + item.status + '</td>' +
-                                    '<td>' + item.created_at + '</td>' +
-                                    '</tr>';
-                            });
-
-                            if (historyRows.length > 0) {
-                                $('#affiliate-history-tbody').append(historyRows.join(''));
+                            if (response.history.length > 0) {
+                                appendHistoryRow(response.history);
                             } else {
                                 $('#affiliate-history-tbody').html(
                                     '<tr>' +
@@ -52,7 +41,6 @@ require(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
                     } else {
                         $('#affiliate-dashboard').remove();
                         $('#create-affiliate-account').show();
-                        $('#affiliate-history-tbody').html('');
                     }
                 },
                 error: function (error) {
@@ -61,6 +49,20 @@ require(['jquery', 'Magento_Ui/js/modal/alert'], function ($, alert) {
             });
         };
         renderAffiliateHistory();
+
+        function appendHistoryRow(history) {
+            const historyRows = history.map(function (item) {
+                    return '<tr>' +
+                        '<td>' + item.order_increment_id + '</td>' +
+                        '<td>' + item.title + '</td>' +
+                        '<td>' + item.amount + '</td>' +
+                        '<td>' + item.status + '</td>' +
+                        '<td>' + item.created_at + '</td>' +
+                        '</tr>';
+                }
+            );
+            $('#affiliate-history-tbody').append(historyRows.join(''));
+        }
 
         function copyToClipboard(data) {
             const tempInput = document.createElement('input');

@@ -63,7 +63,7 @@ class ApplyAffiliate implements ObserverInterface
             $affiliateCode = $this->accountFactory->create()->load($couponCode, 'code');
             $remove = $controller->getRequest()->getParam('remove');
 
-            if ($affiliateCode->getId()) {
+            if ($affiliateCode->getId() && $affiliateCode->getStatus() == 1) {
                 if (!$remove) {
                     $this->checkoutSession->setAffiliateCode($couponCode);
                     $this->messageManager->addSuccessMessage(__('Affiliate code applied successfully 💲🤑'));

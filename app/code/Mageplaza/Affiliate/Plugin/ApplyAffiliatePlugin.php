@@ -34,10 +34,10 @@ class ApplyAffiliatePlugin
             return $result;
         }
         $couponCode = $this->checkoutSession->getAffiliateCode();
-        $affiliateCode = $this->accountFactory->create()->load($couponCode, 'code')->getCode();
-        if (!$affiliateCode) {
+        $affiliateAccount = $this->accountFactory->create()->load($couponCode, 'code');
+        if (!$affiliateAccount->getId() || $affiliateAccount->getStatus() != 1) {
             return $result; // Return default coupon code
         }
-        return $affiliateCode;
+        return $affiliateAccount->getCode();
     }
 }

@@ -5,7 +5,6 @@
     <type name="Magento\Quote\Model\Quote\Address\TotalList">
         <arguments>
             <argument name="totals" xsi:type="array">
-                <!-- Other total models -->
                 <item name="affiliate_discount" xsi:type="string">
                     Mageplaza\Affiliate\Model\Total\Quote\AffiliateDiscount
                 </item>

@@ -9,7 +9,7 @@ use Magento\Ui\Component\Listing\Columns\Column;
 
 class Name extends Column
 {
-    protected $customerRepository;
+    protected CustomerRepositoryInterface $customerRepository;
 
     public function __construct(
         ContextInterface            $context,

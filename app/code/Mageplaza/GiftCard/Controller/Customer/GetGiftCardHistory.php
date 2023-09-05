@@ -21,6 +21,7 @@ class GetGiftCardHistory extends Action
     protected JsonFactory $_jsonFactory;
     protected Data $_priceHelper;
 
+
     public function __construct(
         Context           $context,
         TimezoneInterface $timezone,

@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+- <?xml version="1.0"?>: Đây là khai báo phiên bản XML.
+- <config>: Đây là phần chính của tệp cấu hình, chứa tất cả các khai báo và tùy chỉnh.
+
+
+<type name="Magento\Quote\Model\Quote\Address\TotalList">
+    <arguments>
+        <argument name="totals" xsi:type="array">
+            <!-- Other total models -->
+            <item name="affiliate_discount" xsi:type="string">
+                Mageplaza\Affiliate\Model\Total\Quote\AffiliateDiscount
+            </item>
+        </argument>
+    </arguments>
+</type>
+
+- Đăng ký một total model mới có tên "affiliate_discount" cho địa chỉ Quote. Total model này là
+Mageplaza\Affiliate\Model\Total\Quote\AffiliateDiscount.
+
+
+<type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+    <arguments>
+        <argument name="collections" xsi:type="array">
+            <item name="affiliate_account_listing_data_source" xsi:type="string">account_collection</item>
+        </argument>
+        <argument name="collections" xsi:type="array">
+            <item name="affiliate_history_listing_data_source" xsi:type="string">history_collection</item>
+        </argument>
+    </arguments>
+</type>
+
+- Đăng ký các collection factory để sử dụng trong các Data Providers để cung cấp dữ liệu cho
+giao diện người dùng (UI Component).
+
+
+<virtualType name="account_collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+    <arguments>
+        <argument name="mainTable" xsi:type="string">affiliate_account</argument>
+        <argument name="resourceModel" xsi:type="string">Mageplaza\Affiliate\Model\ResourceModel\Account</argument>
+    </arguments>
+</virtualType>
+<virtualType name="history_collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+    <arguments>
+        <argument name="mainTable" xsi:type="string">affiliate_history</argument>
+        <argument name="resourceModel" xsi:type="string">Mageplaza\Affiliate\Model\ResourceModel\History</argument>
+    </arguments>
+</virtualType>
+
+- Đăng ký hai virtual types cho collection data providers. Mỗi virtual type là một tên định danh (name) và đề cập đến
+một loại collection cụ thể. Chúng xác định tên bảng và resource model mà collection này sử dụng.

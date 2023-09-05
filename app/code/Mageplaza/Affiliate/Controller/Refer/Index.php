@@ -53,6 +53,10 @@ class Index extends Action
         }
 
         $account = $this->accountFactory->create()->load($code, 'code');
+        if ($account->getId() && $account->getStatus() != 1) {
+            $this->messageManager->addErrorMessage(__('This account has not been activated !'));
+            return $this->resultRedirect->setPath('customer/account/index/');
+        }
         $referenceByName = $account->getAccountName($account->getId());
 
         if ($this->helperData->getAffiliateCode()) {

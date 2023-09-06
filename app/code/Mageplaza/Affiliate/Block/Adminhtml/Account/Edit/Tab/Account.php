@@ -46,7 +46,7 @@ class Account extends Generic implements TabInterface
                 'account_id' => $account->getId(),
                 'customer_id' => $account->getCustomerId(),
                 'customer_id_label' => $account->getCustomerId(),
-                'customer_name' => $customer->getFirstname() . ' ' . $customer->getLastname() . ' (' . $customer->getEmail() . ')',
+                'customer_name' => $customer->getName() . ' (' . $customer->getEmail() . ')',
                 'code' => $account->getCode(),
                 'status' => $account->getStatus(),
                 'balance' => $account->getBalance(),

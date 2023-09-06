@@ -10,22 +10,26 @@ use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
+use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 
 class Data extends AbstractHelper
 {
     protected $scopeConfig;
-    protected $storeManager;
-    protected $priceCurrency;
+    protected TimezoneInterface $timezone;
     protected GiftCardFactory $giftCardFactory;
+    protected StoreManagerInterface $storeManager;
+    protected PriceCurrencyInterface $priceCurrency;
 
     public function __construct(
         Context                $context,
+        TimezoneInterface      $timezone,
         ScopeConfigInterface   $scopeConfig,
         StoreManagerInterface  $storeManager,
         PriceCurrencyInterface $priceCurrency,
         GiftCardFactory        $giftCardFactory)
     {
         parent::__construct($context);
+        $this->timezone = $timezone;
         $this->scopeConfig = $scopeConfig;
         $this->storeManager = $storeManager;
         $this->priceCurrency = $priceCurrency;
@@ -108,6 +112,10 @@ class Data extends AbstractHelper
         return min($balance - $amountUsed, $subtotal);
     }
 
+    public function formatDateTime($date): string
+    {
+        return $this->timezone->date($date)->format('n/j/y');
+    }
 
     public function formatCurrencyByCode($amount, $orderCurrencyCode): string
     {

@@ -50,15 +50,8 @@ class GetGiftCardHistory extends Action
 
         $historyData = [];
         foreach ($giftCardListHistory->getData() as $item) {
-            $actionTime = $this->_dateTimeFormatter->formatObject(
-                $this->_timezone->date($item['action_time']),
-                \IntlDateFormatter::SHORT,
-                \IntlDateFormatter::NONE,
-                null,
-                null
-            );
             $historyData[] = [
-                'action_time' => $actionTime,
+                'action_time' => $this->_timezone->date($item['action_time'])->format('n/j/y'),
                 'code' => $item['code'],
                 'amount' => $this->_priceHelper->currency($item['amount']),
                 'action' => $item['action'],

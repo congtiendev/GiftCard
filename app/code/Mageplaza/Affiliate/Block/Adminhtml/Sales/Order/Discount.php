@@ -49,7 +49,7 @@ class Discount extends Template
                 );
                 $parentBlock->addTotal($commission, 'affiliate_commission');
             }
-            if ($history->getDiscount()) {
+            if ($history->getDiscount() !== 0) {
                 $discount = new DataObject(
                     [
                         'code' => 'affiliate_discount',

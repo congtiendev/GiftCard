@@ -159,9 +159,10 @@ class Data extends AbstractHelper
 
     public function getReferLink($code): string
     {
-        $baseUrl = 'http://magento2.loc/affiliate/refer/index/';
+        $baseUrl = $this->storeManager->getStore()->getBaseUrl();
+        $route = 'affiliate/refer/index/';
         $urlKey = $this->getUrlKey();
-        return $baseUrl . $urlKey . '/' . $code;
+        return $baseUrl . $route . $urlKey . '/' . $code;
     }
 
 
@@ -184,14 +185,9 @@ class Data extends AbstractHelper
 
     public function formatDateTime($date): string
     {
-        return $this->dateTimeFormatter->formatObject(
-            $this->timezone->date($date),
-            \IntlDateFormatter::SHORT,
-            \IntlDateFormatter::NONE,
-            null,
-            null
-        );
+        return $this->timezone->date($date)->format('n/j/y');
     }
+
 
     public function isLogin(): bool
     {

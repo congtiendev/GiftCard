@@ -1,5 +1,14 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Email/etc/email_templates.xsd">
-    <template id="affiliate_email_template" label="Affilite Email Template" file="affiliate_email_template.html"
+    <template id="affiliate_register" label="Affiliate Register Email Template" file="affiliate_register.html"
+              type="html" module="Mageplaza_Affiliate" area="frontend"/>
+
+    <template id="balance_change_order" label="Balance Change Order Email Template" file="balance_change_order.html"
+              type="html" module="Mageplaza_Affiliate" area="frontend"/>
+
+    <template id="balance_change_admin" label="Balance Change Admin Email Template" file="balance_change_admin.html"
+              type="html" module="Mageplaza_Affiliate" area="frontend"/>
+
+    <template id="status_change" label="Status Change  Email Template" file="status_change.html"
               type="html" module="Mageplaza_Affiliate" area="frontend"/>
 </config>

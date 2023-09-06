@@ -50,7 +50,8 @@ class OrderWithAffiliate implements ObserverInterface
 
             $commissionValue = $this->_helperData->getCommissionValue();
             $commissionType = $this->_helperData->getCommissionType();
-            $commission = $this->_helperData->calculateAffiliate($order->getSubtotal(), $commissionValue, $commissionType);
+            $commission = $this->_helperData->calculateAffiliate($order->getBaseSubtotal(), $commissionValue,
+                $commissionType);
             if ($commission > 0) {
                 try {
                     $account->setBalance($account->getBalance() + $commission)->save();
@@ -70,20 +71,18 @@ class OrderWithAffiliate implements ObserverInterface
                     ]);
                     $this->updateHistory($history);
                     $this->_helperData->deleteAffiliateCode();
+                    $this->_checkoutSession->unsAffiliateCode();
                 } catch (\Exception $e) {
                     $this->_messageManager->addErrorMessage($e->getMessage());
                 }
-                $emailInfo = [
-                    'subject' => 'Notification of Account Balance Changes',
+                $this->_sendEmail->sendEmail([
                     'mail_to' => $account->getAccountEmail($account->getId()),
                     'customer_name' => $account->getAccountName($account->getId()),
                     'order_id' => $order->getIncrementId(),
                     'commission' => $this->_priceHelper->currency($commission, true, false),
                     'balance' => $this->_priceHelper->currency($account->getBalance(), true, false),
                     'date' => $order->getCreatedAt(),
-                ];
-                $this->_sendEmail->sendEmail($emailInfo);
-                $this->_checkoutSession->unsAffiliateCode();
+                ], 3);
             }
         }
     }

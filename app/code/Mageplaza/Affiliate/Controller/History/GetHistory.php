@@ -58,8 +58,8 @@ class GetHistory extends Action
                 'created_at' => $this->helperData->formatDateTime($item['created_at'])
             ];
         }
-        $referencedBy = '';
         $account = $this->accountFactory->create();
+        $referencedBy = '';
         if ($this->helperData->getAffiliateCode()) {
             $referAccount = $account->load($this->helperData->getAffiliateCode(), 'code');
             $referencedBy = $referAccount->getAccountName($referAccount->getId());

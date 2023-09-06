@@ -58,7 +58,7 @@ class Redeem extends Action
         ];
 
         if (!$giftCard->getId() || $amount <= 0) {
-            $this->messageManager->addErrorMessage($giftCard->getId() ? __('Gift Card has expired !') : __('Gift Card does not exist !'));
+            $this->messageManager->addErrorMessage($giftCard->getId() ? __('Gift Card has expired or fully used.!') : __('Gift Card does not exist !'));
         } else {
             $currentBalance = $this->customerSession->getCustomer()->getGiftcardBalance();
             $this->setBalance($customerSession->getId(), $currentBalance, $amount);
@@ -93,10 +93,6 @@ class Redeem extends Action
     public function setAmountUsed($giftCardId, $balance): void
     {
         $giftCard = $this->giftCardFactory->create()->load($giftCardId);
-        if (!$giftCard->getId()) {
-            $this->messageManager->addErrorMessage(__('Gift Card does not exist !'));
-            return;
-        }
         $giftCard->setAmountUsed($balance);
         try {
             $giftCard->save();

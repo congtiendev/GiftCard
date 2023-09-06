@@ -5,6 +5,7 @@ namespace Mageplaza\Affiliate\Block\Customer\Affiliate;
 use Magento\Cms\Block\Block;
 use Magento\Framework\View\Element\Template;
 use Mageplaza\Affiliate\Model\AccountFactory;
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Framework\App\Response\RedirectInterface;
@@ -14,6 +15,7 @@ use Mageplaza\Affiliate\Model\ResourceModel\History\CollectionFactory as History
 
 class History extends Template
 {
+    protected StoreManagerInterface $storeManager;
     protected AccountFactory $accountFactory;
     protected CustomerSession $customerSession;
     protected RedirectInterface $redirect;
@@ -23,6 +25,7 @@ class History extends Template
 
     public function __construct(
         HistoryCollectionFactory $historyCollectionFactory,
+        StoreManagerInterface    $storeManager,
         AffiliateHelper          $affiliateHelper,
         RedirectInterface        $redirect,
         CustomerSession          $customerSession,
@@ -32,6 +35,7 @@ class History extends Template
     )
     {
         $this->historyCollectionFactory = $historyCollectionFactory;
+        $this->storeManager = $storeManager;
         $this->affiliateHelper = $affiliateHelper;
         $this->redirect = $redirect;
         $this->customerSession = $customerSession;
@@ -39,18 +43,12 @@ class History extends Template
         parent::__construct($context, $data);
         $this->isEnable();
         $this->redirect();
-        $this->getHistory();
         $this->getAccount();
         $this->getBalance();
         $this->getStaticBlock();
         $this->getReferLink();
     }
 
-    public function getHistory(): \Mageplaza\Affiliate\Model\ResourceModel\History\Collection
-    {
-        $customerId = $this->customerSession->getCustomer()->getId();
-        return $this->historyCollectionFactory->create();
-    }
 
     public function isEnable(): bool
     {
@@ -96,10 +94,11 @@ class History extends Template
 
     public function getReferLink(): string
     {
-        $baseUrl = 'http://http://magento2.loc/affiliate/refer/index/';
+        $baseUrl = $this->storeManager->getStore()->getBaseUrl();
+        $route = 'affiliate/refer/index/';
         $urlKey = $this->affiliateHelper->getUrlKey();
         $code = $this->getAccount()->getCode();
-        return $baseUrl . $urlKey . '/' . $code;
+        return $baseUrl . $route . $urlKey . '/' . $code;
     }
 
 

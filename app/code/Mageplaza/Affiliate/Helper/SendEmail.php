@@ -27,35 +27,40 @@ class SendEmail extends AbstractHelper
         parent::__construct($context);
     }
 
-    public function sendEmail($emailInfo): void
+    public function sendEmail($emailInfo, $emailType): void
     {
-        $templateId = 'affiliate_email_template'; // Template ID
-        $fromEmail = 'admin@mageplaza.vn';  // Địa chỉ email của người gửi
-        $fromName = 'ADMIN';             // Tên người gửi
-        $toEmail = $emailInfo['mail_to']; // Địa chỉ email của người nhận
-
+        $fromEmail = 'admin@mageplaza.vn';
+        $fromName = 'ADMIN';
+        $toEmail = $emailInfo['mail_to'];
+        $templateIds = [
+            1 => 'affiliate_register',
+            2 => 'balance_change_admin',
+            3 => 'balance_change_order',
+            4 => 'status_change',
+        ];
         try {
+            $templateId = $templateIds[$emailType];
             $templateVars = [
-                'subject' => $emailInfo['subject'],
                 'customer_name' => $emailInfo['customer_name'],
-                'order_id' => $emailInfo['order_id'],
-                'commission' => $emailInfo['commission'],
-                'balance' => $emailInfo['balance'],
-                'date' => $emailInfo['date'],
+                'code' => $emailInfo['code'] ?? null,
+                'refer_link' => $emailInfo['refer_link'] ?? null,
+                'order_id' => $emailInfo['order_id'] ?? null,
+                'commission' => $emailInfo['commission'] ?? null,
+                'balance' => $emailInfo['balance'] ?? null,
+                'initial_balance' => $emailInfo['initial_balance'] ?? null,
+                'new_balance' => $emailInfo['new_balance'] ?? null,
+                'current_status' => $emailInfo['current_status'] ?? null,
+                'date' => $emailInfo['date'] ?? null
             ];
 
             $storeId = $this->storeManager->getStore()->getId();
-
             $from = ['email' => $fromEmail, 'name' => $fromName];
             $this->inlineTranslation->suspend();
-
             $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
-
             $templateOptions = [
                 'area' => \Magento\Framework\App\Area::AREA_FRONTEND,
                 'store' => $storeId,
             ];
-
             $transport = $this->transportBuilder->setTemplateIdentifier($templateId, $storeScope)
                 ->setTemplateOptions($templateOptions)
                 ->setTemplateVars($templateVars)

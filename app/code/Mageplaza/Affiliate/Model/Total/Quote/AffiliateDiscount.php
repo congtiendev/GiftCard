@@ -42,6 +42,11 @@ class AffiliateDiscount extends AbstractTotal
         $account = $this->_accountFactory->create()->load($code, 'code');
         if ($account->getId() && $this->_helperData->isAffiliateEnabled() && $this->_helperData->getApplyDiscount()
             !== 'no') {
+            if ($account->getStatus() != 1) {
+                $this->_checkoutSession->unsAffiliateCode();
+                $this->_helperData->deleteAffiliateCode();
+                return $this;
+            }
             $applyDiscountType = $this->_helperData->getApplyDiscount();
             $discountValue = $this->_helperData->getDiscountValue();
             $baseDiscount = $this->_helperData->calculateAffiliate($total->getBaseSubtotal(), $discountValue,

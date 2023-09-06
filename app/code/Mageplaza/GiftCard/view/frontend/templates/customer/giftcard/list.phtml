@@ -7,65 +7,65 @@ $_allowRedeem = $block->allowRedeemGiftCard();
 ?>
 <h2>Gift Card Information</h2>
 <hr>
-<?php if ($_isEnable && $_allowRedeem): ?>
-
-    <div class="balance__redeem" style="display:flex; justify-content:space-between; align-items:center; padding-bottom:
+<?php if ($_isEnable): ?>
+    <?php if ($_allowRedeem): ?>
+        <div class="balance__redeem" style="display:flex; justify-content:space-between; align-items:center; padding-bottom:
 50px ">
-        <div class="balance">
-            <h4>Balance</h4>
-            <span id="balance">
+            <div class="balance">
+                <h4>Balance</h4>
+                <span id="balance">
         </span>
-        </div>
-        <div class="redeem">
-            <h4>Redeem</h4>
-            <form method="POST" action="<?php echo $block->getUrl('giftcard/customer/redeem') ?>"
-                  style=" display:flex; justify-content:space-between; align-items:center;
+            </div>
+            <div class="redeem">
+                <h4>Redeem</h4>
+                <form method="POST" action="<?php echo $block->getUrl('giftcard/customer/redeem') ?>"
+                      style=" display:flex; justify-content:space-between; align-items:center;
                 ">
-                <label>
-                    <input type="text" name="code" placeholder="Enter gift card code"
-                           style="padding:10px; border-radius:5px; border: 1px solid dodgerblue;" required>
-                </label>
-                <button type="submit" style="font-size:13px;padding:5px; border-radius:5px; background-color: dodgerblue;
+                    <label>
+                        <input type="text" name="code" placeholder="Enter gift card code"
+                               style="padding:10px; border-radius:5px; border: 1px solid dodgerblue;" required>
+                    </label>
+                    <button type="submit" style="font-size:13px;padding:5px; border-radius:5px; background-color: dodgerblue;
              color:white">
-                    Redeem
-                </button>
-            </form>
+                        Redeem
+                    </button>
+                </form>
+            </div>
         </div>
+    <?php endif; ?>
+
+
+    <div class="table-wrapper downloadable-products">
+        <h2>History</h2>
+        <hr>
+        <table id="my-gift-card-history-table" class="data table table-downloadable-products">
+            <caption class="table-caption">History Gift Card</caption>
+            <thead>
+            <tr>
+                <th scope="col" class="col date">Date</th>
+                <th scope="col" class="col title">Code</th>
+                <th scope="col" class="col title">Amount</th>
+                <th scope="col" class="col actions">Actions</th>
+            </tr>
+            </thead>
+            <tbody id="history">
+            </tbody>
+        </table>
     </div>
-<?php endif; ?>
 
-
-<div class="table-wrapper downloadable-products">
-    <h2>History</h2>
-    <hr>
-    <table id="my-gift-card-history-table" class="data table table-downloadable-products">
-        <caption class="table-caption">History Gift Card</caption>
-        <thead>
-        <tr>
-            <th scope="col" class="col date">Date</th>
-            <th scope="col" class="col title">Code</th>
-            <th scope="col" class="col title">Amount</th>
-            <th scope="col" class="col actions">Actions</th>
-        </tr>
-        </thead>
-        <tbody id="history">
-        </tbody>
-    </table>
-</div>
-
-<script type="text/x-magento-init">
-    {
-        "*": {
-            "Magento_Ui/js/core/app": {
-                "components": {
-                    "getGiftCardHistory": {
-                        "component": "Mageplaza_GiftCard/js/giftcardhistory",
-                        "url": "<?php echo $block->getUrl('giftcard/customer/getgiftcardhistory') ?>"
+    <script type="text/x-magento-init">
+        {
+            "*": {
+                "Magento_Ui/js/core/app": {
+                    "components": {
+                        "getGiftCardHistory": {
+                            "component": "Mageplaza_GiftCard/js/giftcardhistory",
+                            "url": "<?php echo $block->getUrl('giftcard/customer/getgiftcardhistory') ?>"
                     }
                 }
             }
         }
     }
-</script>
+    </script>
 
-
+<?php endif; ?>

@@ -42,7 +42,7 @@ class SendEmail extends AbstractHelper
             $templateId = $templateIds[$emailType];
             $templateVars = [
                 'customer_name' => $emailInfo['customer_name'],
-                'increment_id' => $emailInfo['increment_id'],
+                'increment_id' => $emailInfo['increment_id'] ?? null,
                 'gift_card_code' => $emailInfo['gift_card_code'],
                 'balance' => $emailInfo['balance'] ?? null,
                 'amount_used' => $emailInfo['amount_used'] ?? null,

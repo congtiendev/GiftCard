@@ -49,34 +49,35 @@ class ApplyAffiliate implements ObserverInterface
 
     public function execute(Observer $observer)
     {
-        if (!$this->affiliateHelperData->isAffiliateEnabled() || $this->affiliateHelperData->getApplyDiscount() === 'No') {
+        if (!$this->affiliateHelperData->isAffiliateEnabled()) {
+            return $this;
+        } else {
+            $controller = $observer->getData('controller_action');
+
+            if ($this->affiliateHelperData->getAffiliateCode()) {
+                $this->messageManager->addWarningMessage('You are enjoying incentives from this affiliate code. Please cancel the referent to continue entering the code 😊');
+                $this->actionFlag->set('', ActionInterface::FLAG_NO_DISPATCH, true);
+                $this->redirect->redirect($controller->getResponse(), 'checkout/cart');
+            } else {
+                $couponCode = trim($controller->getRequest()->getParam('coupon_code'));
+                $affiliateCode = $this->accountFactory->create()->load($couponCode, 'code');
+                $remove = $controller->getRequest()->getParam('remove');
+
+                if ($affiliateCode->getId() && $affiliateCode->getStatus() == 1) {
+                    if (!$remove) {
+                        $this->checkoutSession->setAffiliateCode($couponCode);
+                        $this->messageManager->addSuccessMessage(__('Affiliate code applied successfully 💲🤑'));
+                        $this->actionFlag->set('', ActionInterface::FLAG_NO_DISPATCH, true);
+                        $this->redirect->redirect($controller->getResponse(), 'checkout/cart');
+                    } else {
+                        $this->checkoutSession->unsAffiliateCode();
+                    }
+                } else if ($remove && $this->checkoutSession->getAffiliateCode()) {
+                    $this->checkoutSession->unsAffiliateCode();
+                    $this->messageManager->addSuccessMessage(__('You canceled the affiliate code. 🎁🎁🎁'));
+                }
+            }
             return $this;
         }
-        $controller = $observer->getData('controller_action');
-
-        if ($this->affiliateHelperData->getAffiliateCode()) {
-            $this->messageManager->addWarningMessage('You are enjoying incentives from this affiliate code. Please cancel the referent to continue entering the code 😊');
-            $this->actionFlag->set('', ActionInterface::FLAG_NO_DISPATCH, true);
-            $this->redirect->redirect($controller->getResponse(), 'checkout/cart');
-        } else {
-            $couponCode = trim($controller->getRequest()->getParam('coupon_code'));
-            $affiliateCode = $this->accountFactory->create()->load($couponCode, 'code');
-            $remove = $controller->getRequest()->getParam('remove');
-
-            if ($affiliateCode->getId() && $affiliateCode->getStatus() == 1) {
-                if (!$remove) {
-                    $this->checkoutSession->setAffiliateCode($couponCode);
-                    $this->messageManager->addSuccessMessage(__('Affiliate code applied successfully 💲🤑'));
-                    $this->actionFlag->set('', ActionInterface::FLAG_NO_DISPATCH, true);
-                    $this->redirect->redirect($controller->getResponse(), 'checkout/cart');
-                } else {
-                    $this->checkoutSession->unsAffiliateCode();
-                }
-            } else if ($remove && $this->checkoutSession->getAffiliateCode()) {
-                $this->checkoutSession->unsAffiliateCode();
-                $this->messageManager->addSuccessMessage(__('You canceled the affiliate code. 🎁🎁🎁'));
-            }
-        }
-        return $this;
     }
 }

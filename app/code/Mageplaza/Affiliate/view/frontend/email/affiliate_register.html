@@ -1,0 +1,24 @@
+<!--@subject Welcome to Mageplaza Affiliate Program @-->
+<div style="margin: 0 auto">
+    <img style="width:200px;display:block;margin:0 auto" src="{{view url='Mageplaza_Affiliate::images/logo.png'}}"
+         alt="Logo">
+    <h1 style="text-align: center">Welcome to Mageplaza Affiliate Program</h1>
+    <p>Dear {{var customer_name}},</p>
+    <p>Congratulations! Your request to join our affiliate program has been approved.</p>
+    <ul>
+        <li>Your Affiliate Code: <span style="color:blue">{{var code}}</span></li>
+        <li>Your Referral Link:
+            <span style="color:blue;">{{var refer_link}}</span>
+        </li>
+        <li>Your balance: <span style="color:blue;">{{var balance}}</span></li>
+        <li style="text-align: center">
+            <a href="{{store url='affiliate/history/index'}}"
+               style="background-color: #007bff; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px; display: inline-block; margin-top: 20px;">
+                Go to Affiliate Dashboard
+            </a>
+        </li>
+    </ul>
+    <p>Thank you for becoming a part of our affiliate program!</p>
+    <p>Best regards,</p>
+    <p>Mageplaza Service</p>
+</div>

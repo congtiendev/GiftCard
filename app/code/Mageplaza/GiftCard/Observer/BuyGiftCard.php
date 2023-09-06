@@ -83,15 +83,14 @@ class BuyGiftCard implements ObserverInterface
                     }
                     // save history when buy gift card success
                     $this->addHistoryCreate($giftCardHistory);
-                    $emailInfo = [
+                    // send email to customer
+                    $this->giftCardSendEmail->sendEmail([
                         'mail_to' => $order->getCustomerEmail(),
                         'customer_name' => $order->getCustomerName(),
                         'increment_id' => $order->getIncrementId(),
                         'gift_card_code' => $giftCard->getCode(),
                         'balance' => $this->priceCurrency->currency($giftCard->getBalance(), true, false),
-                    ];
-                    // send email to customer
-                    $this->giftCardSendEmail->sendEmail($emailInfo, 1);
+                    ], 1);
                 }
             }
         }

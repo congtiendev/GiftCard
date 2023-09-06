@@ -33,9 +33,9 @@ class Code extends Generic implements TabInterface
     protected function _prepareForm(): Code
     {
         $form = $this->_formFactory->create();
-        $codeLength = $this->giftCardHelper->getCodeLength();
         $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Gift card information')]);
         $giftCard = $this->_coreRegistry->registry('giftcard');
+        $codeLength = $this->giftCardHelper->getCodeLength();
         if ($giftCard->getId()) {
             // Edit
             $formValues = [

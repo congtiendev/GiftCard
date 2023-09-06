@@ -1,0 +1,21 @@
+<!--@subject Notification of Account Balance Changes @-->
+<div style="margin: 0 auto">
+    <img style="width:200px;display:block;margin:0 auto" src="{{view url='Mageplaza_Affiliate::images/logo.png'}}"
+         alt="Logo">
+    <h1 style="text-align: center">Notification of Account Balance Changes</h1>
+    <p>Dear {{var customer_name}},</p>
+
+    <p>We would like to inform you that your balance has been changed by Admin</p>
+
+    <ul>
+        <li>Initial balance : <span style="color:green">{{var initial_balance }}</span></li>
+        <li>New Balance: <span style="color:blue">{{var new_balance}}</span></li>
+        <li>Date: {{var date}}</li>
+    </ul>
+
+    <p>Thank you for being a part of our affiliate program!</p>
+
+    <p>Best regards,</p>
+    <p>Mageplaza Service</p>
+</div>
+
